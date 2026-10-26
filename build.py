@@ -25,4 +25,5 @@ js="""var area=L*W,ta=A*B/144,n=Math.ceil(area/ta*(1+X/100));return [['Area (sq 
 g="""<h2>Tile formula</h2><p>Tiles = floor area ÷ area of one tile, plus waste. Tile area in sq ft = tile length (in) × width (in) ÷ 144. A 12 × 12 in tile is exactly 1 sq ft.</p><h2>How much waste to add</h2><ul><li>Straight lay, simple room: 10%</li><li>Diagonal or herringbone: 15–20%</li><li>Large-format tiles or many obstacles: 15%+</li></ul><p>Keep a few spare tiles from the same dye lot for future repairs—later batches often differ slightly in shade.</p><h2>Grout joints</h2><p>This estimate ignores grout width, which slightly reduces the tile count—another reason the waste allowance is conservative.</p>"""),
 }
 exec(open("tools2.py").read());tools.update(T2)
+exec(open("tools3.py").read());tools.update(T3)
 exec(open("render.py").read())

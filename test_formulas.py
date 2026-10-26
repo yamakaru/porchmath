@@ -42,6 +42,15 @@ case("asphalt-calculator",dict(L=50,W=12,T=3,D=145),{"Cubic yards":"5.56","Tons"
 case("baseboard-calculator",dict(P=48,D=1,O=3,K=12,X=10),{"Linear":"45.0","Pieces":5})
 case("stair-calculator",dict(H=108,M=7.75,T=10),{"Number of risers":14,"Riser":"7.71","Number of treads":13,"Total run":"130.0"})
 case("sod-grass-seed-calculator",dict(A=2000,X=5,Q=450,S=8),{"Sod pieces":210,"Sod pallets":5,"Grass seed":"16.0"})
+case("square-footage-calculator",dict(L=12,W=10,N=1,P=3.5),{"Square feet":"120.00","Square yards":"13.33","Square meters":"11.15","Acres":"0.0028","Estimated cost":"$420.00"})
+case("square-footage-calculator",dict(L=10,W=12,N=3,P=0),{"Square feet":"360.00","Square yards":"40.00"})
+case("cubic-yard-calculator",dict(L=10,W=10,D=4,P=50),{"Cubic yards":"1.23","Cubic feet":"33.33","Cubic meters":"0.94","Estimated cost":"$61.73"})
+case("cubic-yard-calculator",dict(L=27,W=3,D=4,P=0),{"Cubic yards":"1.00"})
+case("board-foot-calculator",dict(T=2,W=6,L=8,Q=10,P=4.5),{"Total board feet":"80.00","Board feet per board":"8.00","Linear feet":"80.0","Estimated cost":"$360.00"})
+case("board-foot-calculator",dict(T=1,W=12,L=12,Q=1,P=0),{"Total board feet":"12.00"})
+case("concrete-block-calculator",dict(L=40,H=4,B=16,C=8,X=5,M=13),{"Blocks incl":189,"Wall area":"160.0","Blocks per sq ft":"1.125","Courses":6,"80 lb":15})
+case("brick-calculator",dict(A=100,O=0,B=7.625,C=2.25,J=0.375,X=10,M=37),{"Bricks incl":755,"Net wall":"100.0","Bricks per sq ft":"6.86","80 lb":21})
+case("brick-calculator",dict(A=120,O=20,B=7.625,C=2.25,J=0.375,X=0,M=37),{"Bricks incl":686,"80 lb":19})
 fail=0;import os
 for slug in sorted(os.listdir("dist")):
     if slug.endswith("-calculator"):

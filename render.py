@@ -17,6 +17,10 @@ NOTES={
 "sand-calculator":("sand-bag","Based on 50 lb bags of all-purpose sand and about 1.35 tons per cu yd. Check the bag label."),
 "asphalt-calculator":("asphalt","Based on hot-mix asphalt at about 145 lb per cu ft. Ask your paving contractor for their mix."),
 "sod-grass-seed-calculator":("sod-seed","Based on 2×5 ft sod pieces and ~450 sq ft pallets. Pallet size and seed rate vary — check with your supplier and the seed bag."),
+"concrete-block-calculator":("mortar-mix","Mortar based on Quikrete Mortar Mix / Mason Mix: one 80 lb bag lays up to about 13 standard 8×8×16 in blocks. Check the bag label."),
+"brick-calculator":("mortar-mix-brick","Based on US modular brick (7⅝ × 2¼ in) with ⅜ in joints; one 80 lb bag of Quikrete Mortar Mix lays up to about 37 bricks. Check your brick spec and bag label."),
+"board-foot-calculator":("lumber","Board feet use nominal sizes (a 2×6 is about 1½ × 5½ in actual). Hardwood is sold by quarters: 4/4 = 1 in rough."),
+"cubic-yard-calculator":("bulk-material","1 cu yd = 27 cu ft = 13.5 bags of 2 cu ft. Bulk suppliers sell by the cubic yard; check their minimum order."),
 }
 import os,json,html
 GSC='<meta name="google-site-verification" content="tUSgNieMfnEGtYO6ftaOrCspkGS1s--0r4vVz2ilGL8" /><meta name="google-site-verification" content="doQNKQ0GzOOrZPbvlmvywtIc4CJyNgohgk_whM_nl4k" />'
