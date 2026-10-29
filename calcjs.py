@@ -10,6 +10,7 @@ def in_unit(label):
 def out_unit(label):
     L=label
     if L=="Total area incl. coats": return ["Total area incl. coats (m²)",0.092903,0]
+    if L.startswith("Joint compound (gal"): return ["Joint compound (L, ~0.41 L per m²)",3.78541,1]
     if L=="Gallons needed": return ["Litres needed",3.78541,1]
     if L=="Buy": return ["Buy (litres, rounded up)",None,0,None,None,2,3.78541]
     if L=="Required thickness (in)": return ["Required thickness (cm)",2.54,1]
@@ -60,7 +61,7 @@ def build(k,v):
           "<option value='215,65,10'>Metric brick 215×102.5×65 mm</option><option value='390,190,10'>Concrete block 390×190×190 mm</option>"
           "<option value='193.675,57.15,9.525'>US modular brick 7⅝×2¼ in</option></select></div>")
     em="var EM={E:'Enter a number',N:'Not a valid number',A:'Unclear number. Write decimals like this:',G:'Must be 0 or more',B:'Number too large'};"
-    js=("function U(x){return Math.ceil(+(+x).toFixed(6))}"
+    js=("function U(x){x=+x;return Math.ceil(+(x-Math.abs(x)*1e-4).toFixed(6))}"
         "var RAW={},LOC=((typeof document!='undefined'&&document.documentElement&&document.documentElement.lang)||'en'),OV=0,MT=0,BAD=0,"
         "MU="+json.dumps(MU)+",MO="+json.dumps(MO)+",ROWS="+json.dumps(len(rows))+";"+em+
         "function NF(d,g,mx){return new Intl.NumberFormat(LOC,{minimumFractionDigits:d,maximumFractionDigits:mx==null?d:mx,useGrouping:g!==false})}"
@@ -84,7 +85,7 @@ def build(k,v):
         "if(OV){BAD=1;return [['Deductions (doors, windows or openings) are larger than the area','—']]}"
         "return RES.map(function(x){var s=String(x[1]);return [x[0],/NaN|Infinity/.test(s)?'—':x[1]]})}"
         "function FM(x,m){var s=String(x),r=s.match(/^(\\$?)(-?\\d+(?:\\.(\\d+))?(?:e[-+]\\d+)?)(.*)$/);if(!r)return s;var n=+r[2],d=r[3]?r[3].length:0;if(/e/i.test(r[2]))d=0;if(m){n=n*m[1];if(m[2]!=null)d=m[2]}return r[1]+NF(d).format(n)+r[4]}"
-        "function CV(o,j,m){var x=o[j];return m&&m[5]!=null?NF(0).format(Math.ceil(+(parseFloat(o[m[5]][1])*m[6]).toFixed(6))):m&&m[3]?NF(0).format(Math.ceil(+(o[0][1]/RAW[m[3]]).toFixed(6))):m&&m[4]?NF(0).format(Math.ceil(+(o[0][1]/m[4]).toFixed(6))):FM(x[1],m)}"
+        "function CV(o,j,m){var x=o[j];return m&&m[5]!=null?NF(0).format(U(parseFloat(o[m[5]][1])*m[6])):m&&m[3]?NF(0).format(U(o[0][1]/RAW[m[3]])):m&&m[4]?NF(0).format(U(o[0][1]/m[4])):FM(x[1],m)}"
         "function run(){var u=arguments[0],o=c(),T=document.getElementById('r');T.innerHTML=o.map(function(x,j){var m=(MT&&!BAD&&MO[j])||null,val=CV(o,j,m);return '<tr><td>'+(m?m[0]:x[0])+'</td><td><b>'+val+'</b></td></tr>'}).join('');if(u&&!BAD&&window.MTrack)window.MTrack('calc')}"
         "function SV(el,x){el.value=NF(0,false,4).format(+(+x).toFixed(4))}"
         "function SW(el,m){var k=MU[el.id];if(!k)return;var s=el._pm||(el._pm={}),o=el.value,t;if(s.p===o&&s[m]!=null)t=s[m];else{var x=pnum(o);if(typeof x!='number')return;el.value=o;SV(el,m?x/k:x*k);t=el.value}s[MT]=o;el.value=t;s.p=t}"

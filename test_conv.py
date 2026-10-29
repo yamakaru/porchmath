@@ -6,6 +6,8 @@ L=['es','pt','fr','de','it','id','vi','ja']
 F={('m²','sq ft'):0.092903,('m³','cu ft'):0.0283168,('m³','cu yd'):0.764555,('kg','lb'):0.45359,('L','gal'):3.78541,('m','ft'):0.3048,('cm','in'):2.54,('mm','in'):25.4,('cm²','sq in'):6.4516,('t','tons'):0.907185}
 N=r'(?:\d{1,3}(?:[,.\u202f\u00a0 ]\d{3})+(?![\d]|[.,]\d)|\d+(?:[.,]\d+)?[⅛¼⅜½⅝¾⅞]?|[⅛¼⅜½⅝¾⅞])'
 G=rf'{N}(?:\s*[–〜~×x-]\s*{N})*'
+W=r'(?:à|a|bis|hingga|sampai|đến|to|até|al)'
+WR=re.compile(rf'(?<![\d.,])({N})\s+{W}\s+({N})\s*(m²|m³|kg|L|mm|cm²|cm|m|t)\s*[(（]\s*{N}\s*[a-z]')
 PAT=re.compile(rf'({G})\s*(m²|m³|kg|L|mm|cm²|cm|m|t)\s*[(（]\s*≈?\s*({G})\s*(sq ft|cu ft|cu yd|lb|gal|ft|in|sq in|tons)\s*[)）]')
 bad=[];n=0
 for l in L:
@@ -14,7 +16,9 @@ for l in L:
         p=os.path.join(r,'index.html');M.ENTH.clear();M.ENTH.update(x.replace(',','') for x in M.entho(p,l))
         s=BeautifulSoup(open(p,encoding='utf-8'),'html.parser')
         for x in s(['script','style','head']):x.decompose()
-        for m in PAT.finditer(s.get_text(' ')):
+        T=s.get_text(' ')
+        for m in WR.finditer(T):bad.append((r,'word-range one end: '+m.group(0)))
+        for m in PAT.finditer(T):
             f=F.get((m.group(2),m.group(4)))
             if not f:continue
             a=[M.val(v) for v in re.split(r'\s*[–〜~×x-]\s*',m.group(1))];b=[M.val(v) for v in re.split(r'\s*[–〜~×x-]\s*',m.group(3))]

@@ -6,7 +6,7 @@ FR={'⅛':.125,'¼':.25,'⅜':.375,'½':.5,'⅝':.625,'¾':.75,'⅞':.875}
 NUM=r'(?:\d+(?:[.,]\d+)?[⅛¼⅜½⅝¾⅞]?|[⅛¼⅜½⅝¾⅞])'
 ENTH=set();LSEP=['.']
 TOK=r'(?:\d{1,3}(?:[,.\u202f\u00a0 ]\d{3})+(?![\d]|[.,]\d)|\d+(?:[.,]\d+)?)'
-SPL=r'\s*[–〜~-]\s*'
+SPL=r'(?:\s*[–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)'
 RNG=rf'({TOK}(?:{SPL}{TOK})?)'
 def isth(s):return bool(re.fullmatch(r'\d{1,3}(?:[,.\u202f\u00a0 ]\d{3})+',s)) and (re.sub(r'\D','',s) in ENTH or bool(re.search(r'[\u202f\u00a0 ]',s)))
 def O(s):
@@ -33,7 +33,7 @@ def conv(t,comma,state):
     t=re.sub(r'(\d+(?:(?:[,、]\s*|\s+)(?:[^\s\d()（）]{1,8}\s*)?\d+)*)\s*lb\s*[(（]\s*([^\d()（）]{0,10})(\d[^()（）]*?)\s*kg\s*[)）]',lambda m:(f"{m.group(3)} kg (≈{re.sub(r'\d+(?:[.,]\d+)?',lambda q:F(val(q.group(0))*2.20462,0),m.group(3))} lb)" if (m.group(2).strip() or abs(val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])-val(re.findall(r'\d+(?:[.,]\d+)?',m.group(1))[-1])*0.45359)>0.1*val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])) else f"{m.group(3)} kg ({m.group(1)} lb)"),t)
     def R(t,ure,mul,d,out,un):
         return re.sub(rf'(?<![\d.,(]){RNG}\s*{ure}',lambda m:'–'.join(F(val(x)*mul,d) for x in re.split(SPL,m.group(1)))+f" {out} ({O(m.group(1))} {un})",t)
-    t=re.sub(rf'(?<![\d.,])({TOK})\s*lb\s+(\S{{1,8}})\s+cu in\b',lambda m:f"{F(val(m.group(1))*453.592/16.3871,1)} g/cm³ ({m.group(1)} lb "+m.group(2)+" cu in)",t)
+    t=re.sub(rf'(?<![\d.,])({TOK})\s*lb(\s*/\s*|\s+(?:\S{{1,8}}\s+){{1,2}})cu in\b',lambda m:f"{F(val(m.group(1))*453.592/16.3871,1)} g/cm³ ({m.group(1)} lb"+m.group(2)+"cu in)",t)
     t=R(t,r'lb(?![A-Za-z])(?!\))',0.45359,0,'kg','lb')
     t=R(t,r'cu ft(?![A-Za-z])',0.0283168,3,'m³','cu ft')
     t=R(t,r'cu yd(?![A-Za-z])(?!\s*/\s*[\d.,]+\s*m³)',0.764555,2,'m³','cu yd')
@@ -41,15 +41,20 @@ def conv(t,comma,state):
     t=R(t,r'sq in(?![A-Za-z])',6.4516,0,'cm²','sq in')
     t=R(t,r'gal(?:lons?)?(?![A-Za-z])(?!\s*\()',3.78541,1,'L','gal')
     def dims(m,unit,mul,d,out):
-        parts=re.split(r'(\s*[×x–〜~-]\s*)',m.group(1))
+        parts=re.split(r'(\s*[×x–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)',m.group(1))
         return ''.join(F(val(p)*mul,d) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
-    t=re.sub(rf'(?<![\d.,])({NUM}(?:\s*[×–〜~-]\s*{NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
-    t=re.sub(rf'(?<![\d.,A-Za-z])({NUM}(?:\s*[×–〜~-]\s*{NUM})*)\s*in(?![A-Za-z-])',lambda m:dims(m,'in',25.4,0,'mm') if ('×' in m.group(1) or any(c in m.group(1) for c in FR) or val(re.split(r'[×–〜~-]',m.group(1))[0])<2) else dims(m,'in',2.54,0,'cm'),t)
+    t=re.sub(rf'(?<![\d.,])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
+    t=re.sub(r'(?<![\d.,/(])(\d+)/(\d+) in(?![A-Za-z-])(?!\s*\()',lambda m:F(int(m.group(1))/int(m.group(2))*25.4,1)+f' mm ({m.group(1)}/{m.group(2)} in)',t)
+    t=re.sub(rf'(?<![\d.,A-Za-z/])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*in(?![A-Za-z-])',lambda m:dims(m,'in',25.4,0,'mm') if ('×' in m.group(1) or any(c in m.group(1) for c in FR) or val(re.split(r'\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+',m.group(1))[0])<2) else dims(m,'in',2.54,0,'cm'),t)
     # bare unit names: annotate first occurrence per page
     for u,eq in (('gallon','3,785 L' if comma else '3.785 L'),('cu in','16,4 cm³' if comma else '16.4 cm³'),('sq ft','0,093 m²' if comma else '0.093 m²'),('cu ft','0,028 m³' if comma else '0.028 m³'),('cu yd','0,76 m³' if comma else '0.76 m³')):
         if u not in state:
             n=re.subn(rf'(?<![\d)] )(?<!\d)\b{u}\b(?!\s*\()(?![^(]*\))',f"{u} (= {eq})",t,count=1)
             if n[1]: t=n[0];state.add(u)
+    G=lambda y:F(val(y)*453.592/16.3871,1)
+    t=re.sub(rf'{TOK}\s*kg\s*[(（]({TOK})\s*lb[)）]\s*/\s*cu in',lambda m:f"{G(m.group(1))} g/cm³ ({m.group(1)} lb/cu in)",t)
+    t=re.sub(rf'1 cu inあたり約{TOK}\s*kg\s*[(（]({TOK})\s*lb[)）]（約[\d.,]+ g/cm³）',lambda m:f"約{G(m.group(1))} g/cm³（1 cu inあたり{m.group(1)} lb）",t)
+    t=re.sub(r'(g/cm³ \([^()]*cu in\)) \((?:khoảng|約|ca\.|environ|circa|cerca de|sekitar|aprox\.)\s*[\d.,]+ g/cm³\)',r'\1',t)
     return t
 DOT=re.compile(r'(?<![\d.,])(\d+)\.(\d+)(?!\d|[.,]\d)')
 UW={'de':['Kubikyard','Kubikyard','Kubikfuß','Kubikfuß','Quadratfuß','Quadratfuß','Quadratyard','Quadratyard','Kubikzoll','Kubikzoll','Quadratzoll','Quadratzoll','Kubikmeter','Kubikmeter','Quadratmeter','Quadratmeter'],
