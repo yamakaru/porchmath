@@ -37,11 +37,16 @@ def page(path,lang):
     if not b:return 0
     comma=lang!='ja';state=set();ch=0
     for node in list(b.find_all(string=True)):
-        if isinstance(node,NavigableString) and node.parent and not node.find_parent(['script','style','textarea']) and not any('us' in (p.get('class') or []) for p in node.parents if hasattr(p,'get')):
-            t=str(node)
+        if not(isinstance(node,NavigableString) and node.parent) or node.find_parent(['script','style','textarea']):continue
+        cl=set(c for p in node.parents if hasattr(p,'get') for c in (p.get('class') or []))
+        if cl&{'us','usb','usc'}:continue
+        t=str(node)
+        if cl&{'mt','mtb','mtc'}:
+            n=re.sub(r'(?<=\d)\.(?=\d)',',',t) if comma else t
+        else:
             if not re.search(r'lb|ft|in\b|yd',t):continue
             n=conv(t,comma,state)
-            if n!=t:node.replace_with(n);ch+=1
+        if n!=t:node.replace_with(n);ch+=1
     if ch:open(path,'w',encoding='utf-8').write(str(soup))
     return ch
 if __name__=='__main__':
