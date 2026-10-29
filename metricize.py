@@ -44,7 +44,8 @@ def conv(t,comma,state):
         parts=re.split(r'(\s*[×x–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)',m.group(1))
         return ''.join(F(val(p)*mul,d) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
     t=re.sub(rf'(?<![\d.,])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
-    t=re.sub(r'(?<![\d.,/(])(\d+)/(\d+) in(?![A-Za-z-])(?!\s*\()',lambda m:F(int(m.group(1))/int(m.group(2))*25.4,1)+f' mm ({m.group(1)}/{m.group(2)} in)',t)
+    FQ=lambda q:F(int(q.split('/')[0])/int(q.split('/')[1])*25.4+1e-9,1)
+    t=re.sub(r'(?<![\d.,/(])(\d+/\d+)(?:(\s*[–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)(\d+/\d+))? in(?![A-Za-z-])(?!\s*\()',lambda m:FQ(m.group(1))+(('–'+FQ(m.group(3))) if m.group(3) else '')+f' mm ({m.group(1)}'+((m.group(2)+m.group(3)) if m.group(3) else '')+' in)',t)
     t=re.sub(rf'(?<![\d.,A-Za-z/])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*in(?![A-Za-z-])',lambda m:dims(m,'in',25.4,0,'mm') if ('×' in m.group(1) or any(c in m.group(1) for c in FR) or val(re.split(r'\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+',m.group(1))[0])<2) else dims(m,'in',2.54,0,'cm'),t)
     # bare unit names: annotate first occurrence per page
     for u,eq in (('gallon','3,785 L' if comma else '3.785 L'),('cu in','16,4 cm³' if comma else '16.4 cm³'),('sq ft','0,093 m²' if comma else '0.093 m²'),('cu ft','0,028 m³' if comma else '0.028 m³'),('cu yd','0,76 m³' if comma else '0.76 m³')):

@@ -17,6 +17,7 @@ for l in L:
         s=BeautifulSoup(open(p,encoding='utf-8'),'html.parser')
         for x in s(['script','style','head']):x.decompose()
         T=s.get_text(' ')
+        for m in re.finditer(r'(?<![\d/])\d+/\d+\s*(?:[–〜~-]|\s(?:à|a|bis|hingga|sampai|đến|to|até|al)\s)\s*[\d.,]+\s*(?:mm|cm|m)\b',T):bad.append((r,'fraction range one end: '+m.group(0)))
         for m in WR.finditer(T):bad.append((r,'word-range one end: '+m.group(0)))
         for m in PAT.finditer(T):
             f=F.get((m.group(2),m.group(4)))
