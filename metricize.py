@@ -28,11 +28,19 @@ def fmt(x,d,comma):
     if d: s=s.rstrip('0').rstrip('.')
     return s.replace('.',',') if comma else s
 def conv(t,comma,state):
+    _P=[]
+    def _pr(m):
+        _P.append(m.group(2));return m.group(1)+' (\x00'+str(len(_P)-1)+'\x00)'
+    t=re.sub(r'(\d\s?(?:mm|cm|m|kg|L|m²|m³|g/cm³|t)) \(([^()]*)\)',_pr,t)
+    r=_conv(t,comma,state)
+    r=re.sub(r'(\d+ × \d+ mm \([^()]*\)) \(\d+ sq in\)',r'\1',r)
+    return re.sub('\x00(\\d+)\x00',lambda m:_P[int(m.group(1))],r)
+def _conv(t,comma,state):
     F=lambda x,d:fmt(x,d,comma)
     # list/ single lb with an explicit kg equivalent in brackets -> 'kg (lb)'
     t=re.sub(r'(\d+(?:(?:[,、]\s*|\s+)(?:[^\s\d()（）]{1,8}\s*)?\d+)*)\s*lb\s*[(（]\s*([^\d()（）]{0,10})(\d[^()（）]*?)\s*kg\s*[)）]',lambda m:(f"{m.group(3)} kg (≈{re.sub(r'\d+(?:[.,]\d+)?',lambda q:F(val(q.group(0))*2.20462,0),m.group(3))} lb)" if (m.group(2).strip() or abs(val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])-val(re.findall(r'\d+(?:[.,]\d+)?',m.group(1))[-1])*0.45359)>0.1*val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])) else f"{m.group(3)} kg ({m.group(1)} lb)"),t)
     def R(t,ure,mul,d,out,un):
-        return re.sub(rf'(?<![\d.,(]){RNG}\s*{ure}',lambda m:'–'.join(F(val(x)*mul,d) for x in re.split(SPL,m.group(1)))+f" {out} ({O(m.group(1))} {un})",t)
+        return re.sub(rf'(?<![\d.,(]){RNG}\s*{ure}',lambda m:'–'.join((lambda vs:[F(v,max([d]+[1-int(__import__('math').floor(__import__('math').log10(abs(w)))) for w in vs if w and abs(w)<1])) for v in vs])([val(x)*mul for x in re.split(SPL,m.group(1))]))+f" {out} ({O(m.group(1))} {un})",t)
     t=re.sub(rf'(?<![\d.,])({TOK})\s*lb(\s*/\s*|\s+(?:\S{{1,8}}\s+){{1,2}})cu in\b',lambda m:f"{F(val(m.group(1))*453.592/16.3871,1)} g/cm³ ({m.group(1)} lb"+m.group(2)+"cu in)",t)
     t=R(t,r'lb(?![A-Za-z])(?!\))',0.45359,0,'kg','lb')
     t=R(t,r'cu ft(?![A-Za-z])',0.0283168,3,'m³','cu ft')
@@ -42,7 +50,7 @@ def conv(t,comma,state):
     t=R(t,r'gal(?:lons?)?(?![A-Za-z])(?!\s*\()',3.78541,1,'L','gal')
     def dims(m,unit,mul,d,out):
         parts=re.split(r'(\s*[×x–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)',m.group(1))
-        return ''.join(F(val(p)*mul,d) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
+        return ''.join(F(val(p)*mul,(2 if out=='m' and val(p)*mul<10 else d)) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
     t=re.sub(rf'(?<![\d.,])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
     FQ=lambda q:F(int(q.split('/')[0])/int(q.split('/')[1])*25.4+1e-9,1)
     t=re.sub(r'(?<![\d.,/(])(\d+/\d+)(?:(\s*[–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)(\d+/\d+))? in(?![A-Za-z-])(?!\s*\()',lambda m:FQ(m.group(1))+(('–'+FQ(m.group(3))) if m.group(3) else '')+f' mm ({m.group(1)}'+((m.group(2)+m.group(3)) if m.group(3) else '')+' in)',t)
@@ -88,7 +96,7 @@ def page(path,lang):
         if comma:
             for x in TH:t=re.sub(r'(?<![\d.,])'+re.escape(x)+r'(?!\d|[.,]\d)',x.replace(',',''),t)
         t0=str(node)
-        if cl&{'us','usb','usc'}:n=t
+        if cl&{'us','usb','usc','nocv'}:n=t
         elif cl&{'mt','mtb','mtc'}:
             n=t
         else:

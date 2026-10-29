@@ -11,7 +11,7 @@ def out_unit(label):
     L=label
     if L=="Total area incl. coats": return ["Total area incl. coats (m²)",0.092903,0]
     if L.startswith("Joint compound (gal"): return ["Joint compound (L, ~0.41 L per m²)",3.78541,1]
-    MAP={"4×8 sheets (32 sq ft)":"1.2×2.4 m sheets (2.97 m²)","4×12 sheets (48 sq ft)":"1.2×3.7 m sheets (4.46 m²)","4.5 gal pails of compound":"17 L (4.5 gal) pails of compound","Screws (~1 per sq ft)":"Screws (~11 per m²)","80 lb mortar bags":"36 kg (80 lb) mortar bags","50 lb bags":"23 kg (50 lb) bags","0.5 cu ft bags":"14 L (0.5 cu ft) bags","2 cu ft bags":"57 L (2 cu ft) bags","3 cu ft bags":"85 L (3 cu ft) bags","Concrete bags (~2 × 50 lb per post)":"Concrete bags (~2 × 23 kg (50 lb) per post)","Sod pieces (2×5 ft = 10 sq ft)":"Sod pieces (0.6×1.5 m = 0.93 m²)"}
+    MAP={"4×8 sheets (32 sq ft)":"1.22×2.44 m sheets (2.97 m²)","4×12 sheets (48 sq ft)":"1.22×3.66 m sheets (4.46 m²)","4.5 gal pails of compound":"17 L (4.5 gal) pails of compound","Screws (~1 per sq ft)":"Screws (~11 per m²)","80 lb mortar bags":"36 kg (80 lb) mortar bags","50 lb bags":"23 kg (50 lb) bags","0.5 cu ft bags":"14 L (0.5 cu ft) bags","2 cu ft bags":"57 L (2 cu ft) bags","3 cu ft bags":"85 L (3 cu ft) bags","Concrete bags (~2 × 50 lb per post)":"Concrete bags (~2 × 23 kg (50 lb) per post)","Sod pieces (2×5 ft = 10 sq ft)":"Sod pieces (0.61×1.52 m = 0.93 m²)"}
     if L in MAP: return [MAP[L],1,0]
     if L=="Gallons needed": return ["Litres needed",3.78541,1]
     if L=="Buy": return ["Buy (litres, rounded up)",None,0,None,None,2,3.78541]

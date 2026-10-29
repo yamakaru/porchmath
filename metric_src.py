@@ -6,3 +6,20 @@ MD.update({"paver-calculator":"Paver count plus base gravel and bedding sand in 
 "gravel-calculator":"Get cubic metres and tonnes from length, width and depth.",
 "asphalt-calculator":"Driveway length, width and compacted thickness to cubic metres and tonnes of hot mix asphalt.",
 "concrete-block-calculator":"Wall length and height to the number of 200 × 200 × 400 mm concrete blocks, courses and 36 kg bags of mortar mix."})
+# metric worked examples (shown in metric mode instead of the US example)
+MEX={
+"asphalt-calculator":"<b>Example:</b> a 15 × 4 m driveway at 7.5 cm: 15 × 4 × 0.075 = 4.5 m³ × 2.32 t/m³ ≈ 10.4 t.",
+"baseboard-calculator":"<b>Example:</b> 14.6 m perimeter − 0.9 m door = 13.7 m. Plus 10% = 15.07 m ÷ 3.66 = 4.1 → 5 pieces of 3.66 m.",
+"concrete-block-calculator":"<b>Example:</b> a 12 m long, 1.2 m high wall is 14.4 m² × 12.5 blocks per m² = 180 blocks. With 5% waste: 189 blocks in 6 courses. At 13 blocks per 36 kg bag of mortar mix, that is 15 bags.",
+"drywall-calculator":"<b>Example:</b> a 3.66 × 3.66 m room with 2.44 m walls: 14.64 × 2.44 = 35.7 m² + 13.4 m² ceiling = 49.1 m². With 10% waste, 54.0 m² ÷ 2.97 = 18.2 → 19 sheets of 1.22 × 2.44 m.",
+"fence-calculator":"<b>Example:</b> 30 m with 2.4 m spacing: 13 sections, 14 posts, 39 rails (3 per section), and 3000 cm ÷ 14 cm = 214.3 → 215 pickets for a privacy fence.",
+"flooring-calculator":"<b>Example:</b> 4.5 × 3.6 m = 16.2 m². Plus 10% = 17.82 m² ÷ 1.86 m² per box = 9.6 → 10 boxes.",
+"grout-calculator":"<b>Example:</b> 10 m² of 30 × 30 cm tile, 3 mm joints, 10 mm deep: joint length per m² = 0.6 ÷ 0.09 = 6.67 m, so 10 × 6.67 × 0.003 × 0.01 = 0.002 m³ × 1600 kg/m³ ≈ 3.2 kg.",
+"insulation-calculator":"<b>Example:</b> R-38 attic with blown cellulose at R-3.2 per inch: 38 ÷ 3.2 = 11.9 inches, about 30 cm deep.",
+"paint-calculator":"<b>Example:</b> a 3.66 × 3.66 m bedroom has a 14.64 m perimeter. At 2.44 m high: 35.7 m² − 1.9 m² (door) − 2.8 m² (two windows) = 31.0 m². Two coats = 62.0 m² ÷ 8.6 m² per litre = 7.2 → buy 8 litres.",
+"paver-calculator":"<b>Example:</b> 12 m² of 10 × 20 cm pavers: 12 × 50 = 600, plus 10% = 660 pavers. A 10 cm base is 12 × 0.10 = 1.2 m³ of gravel; 2.5 cm of sand = 0.3 m³.",
+"sand-calculator":"<b>Example:</b> a 3 × 3 m area at 5 cm: 3 × 3 × 0.05 = 0.45 m³ ≈ 0.72 t (at 1.6 t/m³) ≈ 32 bags of 23 kg.",
+"sod-grass-seed-calculator":"<b>Example:</b> 186 m² + 5% = 195.3 m² ÷ 0.93 m² = 210 pieces, or 5 pallets at 41.8 m².",
+"topsoil-calculator":"<b>Example:</b> 46 m² at 10 cm = 4.6 m³ ≈ 6.0 t at 1.3 t/m³. That's 220 bags of 21 L—bulk delivery makes far more sense.",
+"wallpaper-calculator":"<b>Example:</b> 14.6 m of wall, 2.44 m high, 52 cm × 10 m rolls, no repeat: 1460 ÷ 52 = 28.1 → 29 strips; 1000 ÷ 244 = 4 strips per roll; 29 ÷ 4 = 7.25 → 8 rolls.",
+}
