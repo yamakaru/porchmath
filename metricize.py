@@ -32,21 +32,46 @@ def conv(t,comma,state):
             n=re.subn(rf'(?<![\d)] )(?<!\d)\b{u}\b(?!\s*\()(?![^(]*\))',f"{u} (= {eq})",t,count=1)
             if n[1]: t=n[0];state.add(u)
     return t
+DOT=re.compile(r'(?<![\d.,])(\d+)\.(\d+)(?!\d|[.,]\d)')
+UW={'de':['Kubikyard','Kubikyard','Kubikfuß','Kubikfuß','Quadratfuß','Quadratfuß','Quadratyard','Quadratyard','Kubikzoll','Kubikzoll','Quadratzoll','Quadratzoll','Kubikmeter','Kubikmeter','Quadratmeter','Quadratmeter'],
+'es':['yarda cúbica','yardas cúbicas','pie cúbico','pies cúbicos','pie cuadrado','pies cuadrados','yarda cuadrada','yardas cuadradas','pulgada cúbica','pulgadas cúbicas','pulgada cuadrada','pulgadas cuadradas','metro cúbico','metros cúbicos','metro cuadrado','metros cuadrados'],
+'pt':['jarda cúbica','jardas cúbicas','pé cúbico','pés cúbicos','pé quadrado','pés quadrados','jarda quadrada','jardas quadradas','polegada cúbica','polegadas cúbicas','polegada quadrada','polegadas quadradas','metro cúbico','metros cúbicos','metro quadrado','metros quadrados'],
+'fr':['yard cube','yards cubes','pied cube','pieds cubes','pied carré','pieds carrés','yard carré','yards carrés','pouce cube','pouces cubes','pouce carré','pouces carrés','mètre cube','mètres cubes','mètre carré','mètres carrés'],
+'it':['iarda cubica','iarde cubiche','piede cubo','piedi cubi','piede quadrato','piedi quadrati','iarda quadrata','iarde quadrate','pollice cubo','pollici cubi','pollice quadrato','pollici quadrati','metro cubo','metri cubi','metro quadrato','metri quadrati'],
+'id':['yard kubik']*2+['kaki kubik']*2+['kaki persegi']*2+['yard persegi']*2+['inci kubik']*2+['inci persegi']*2+['meter kubik']*2+['meter persegi']*2,
+'vi':['yard khối']*2+['feet khối']*2+['feet vuông']*2+['yard vuông']*2+['inch khối']*2+['inch vuông']*2+['mét khối']*2+['mét vuông']*2}
+UP=[r'cubic\s+yard',r'cubic\s+yards',r'cubic\s+foot',r'cubic\s+feet',r'square\s+foot',r'square\s+feet',r'square\s+yard',r'square\s+yards',r'cubic\s+inch',r'cubic\s+inches',r'square\s+inch',r'square\s+inches',r'cubic\s+met(?:re|er)',r'cubic\s+met(?:re|er)s',r'square\s+met(?:re|er)',r'square\s+met(?:re|er)s']
+def locd(t,lang):
+    t=DOT.sub(lambda m:m.group(0) if (m.group(1)[0]!='0' and len(m.group(1))<=3 and len(m.group(2))==3 and m.group(2)[-1]=='0') else m.group(1)+','+m.group(2),t)
+    for pat,w in sorted(zip(UP,UW[lang]),key=lambda x:-len(x[0])):
+        t=re.sub(r'\b'+pat+r'\b',lambda m:(w[0].upper()+w[1:]) if m.group(0)[0].isupper() and lang!='de' else w,t,flags=re.I)
+    return t
+SEP={'fr':'\u202f'}
+def entho(path,lang):
+    ep=path.replace(f'dist/{lang}/','dist/',1)
+    try:t=open(ep,encoding='utf-8').read()
+    except OSError:return set()
+    return set(re.findall(r'(?<![\d.,])[1-9]\d{0,2}(?:,\d{3})+(?![\d]|[.,]\d)',t))
 def page(path,lang):
     s=open(path,encoding='utf-8').read();soup=BeautifulSoup(s,'html.parser');b=soup.body
     if not b:return 0
-    comma=lang!='ja';state=set();ch=0
+    comma=lang!='ja';state=set();ch=0;TH=entho(path,lang);THD={x.replace(',',''):x for x in TH}
     for node in list(b.find_all(string=True)):
         if not(isinstance(node,NavigableString) and node.parent) or node.find_parent(['script','style','textarea']):continue
         cl=set(c for p in node.parents if hasattr(p,'get') for c in (p.get('class') or []))
-        if cl&{'us','usb','usc'}:continue
         t=str(node)
-        if cl&{'mt','mtb','mtc'}:
-            n=re.sub(r'(?<=\d)\.(?=\d)',',',t) if comma else t
+        if comma:
+            for x in TH:t=re.sub(r'(?<![\d.,])'+re.escape(x)+r'(?!\d|[.,]\d)',x.replace(',',''),t)
+        t0=str(node)
+        if cl&{'us','usb','usc'}:n=t
+        elif cl&{'mt','mtb','mtc'}:
+            n=t
         else:
-            if not re.search(r'lb|ft|in\b|yd',t):continue
-            n=conv(t,comma,state)
-        if n!=t:node.replace_with(n);ch+=1
+            n=conv(t,comma,state) if re.search(r'lb|ft|in\b|yd',t) else t
+        if comma:
+            n=locd(n,lang)
+            n=re.sub(r'(?<![\d.,])\d{4,}(?!\d|[.,]\d)',lambda m:THD[m.group(0)].replace(',',SEP.get(lang,'.')) if m.group(0) in THD else m.group(0),n)
+        if n!=t0:node.replace_with(n);ch+=1
     if ch:open(path,'w',encoding='utf-8').write(str(soup))
     return ch
 if __name__=='__main__':
