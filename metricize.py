@@ -40,7 +40,7 @@ def _conv(t,comma,state):
     # list/ single lb with an explicit kg equivalent in brackets -> 'kg (lb)'
     t=re.sub(r'(\d+(?:(?:[,、]\s*|\s+)(?:[^\s\d()（）]{1,8}\s*)?\d+)*)\s*lb\s*[(（]\s*([^\d()（）]{0,10})(\d[^()（）]*?)\s*kg\s*[)）]',lambda m:(f"{m.group(3)} kg (≈{re.sub(r'\d+(?:[.,]\d+)?',lambda q:F(val(q.group(0))*2.20462,0),m.group(3))} lb)" if (m.group(2).strip() or abs(val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])-val(re.findall(r'\d+(?:[.,]\d+)?',m.group(1))[-1])*0.45359)>0.1*val(re.findall(r'\d+(?:[.,]\d+)?',m.group(3))[-1])) else f"{m.group(3)} kg ({m.group(1)} lb)"),t)
     def R(t,ure,mul,d,out,un):
-        return re.sub(rf'(?<![\d.,(]){RNG}\s*{ure}',lambda m:'–'.join((lambda vs:[F(v,max([d]+[1-int(__import__('math').floor(__import__('math').log10(abs(w)))) for w in vs if w and abs(w)<1])) for v in vs])([val(x)*mul for x in re.split(SPL,m.group(1))]))+f" {out} ({O(m.group(1))} {un})",t)
+        return re.sub(rf'(?<![\d.,(]){RNG}\s*{ure}',lambda m:'–'.join((lambda vs:[F(v,max([2 if out=='m²' and max(abs(w) for w in vs)<10 else d]+[1-int(__import__('math').floor(__import__('math').log10(abs(w)))) for w in vs if w and abs(w)<1])) for v in vs])([val(x)*mul for x in re.split(SPL,m.group(1))]))+f" {out} ({O(m.group(1))} {un})",t)
     t=re.sub(rf'(?<![\d.,])({TOK})\s*lb(\s*/\s*|\s+(?:\S{{1,8}}\s+){{1,2}})cu in\b',lambda m:f"{F(val(m.group(1))*453.592/16.3871,1)} g/cm³ ({m.group(1)} lb"+m.group(2)+"cu in)",t)
     t=R(t,r'lb(?![A-Za-z])(?!\))',0.45359,0,'kg','lb')
     t=R(t,r'cu ft(?![A-Za-z])',0.0283168,3,'m³','cu ft')
@@ -102,7 +102,8 @@ def page(path,lang):
         else:
             n=conv(t,comma,state) if re.search(r'lb|ft|in\b|yd',t) else t
         if not cl&{'us','usb','usc','nocv'}:
-            n=re.sub(r'(?<![\d.,×(/])4\s?×\s?(8|12)(?![\d.,×]|\s?(?:ft|m\b|mm|cm|in\b|\(|×|=|/|sq))',lambda m:('1.22×2.44' if m.group(1)=='8' else '1.22×3.66')+f' m (4×{m.group(1)} ft)',n)
+            n=re.sub(r'(?<![\d.,×(/])8\s?×\s?8\s?×\s?16(?![\d×]|[.,]\d|\s?(?:in\b|mm|cm|\())','200×200×400 mm (8×8×16 in)',n)
+            n=re.sub(r'(?<![\d.,×(/])4\s?×\s?(8|12)(?![\d×]|[.,]\d|\s?(?:ft|m\b|mm|cm|in\b|\(|×|=|/|sq))',lambda m:('1.22×2.44' if m.group(1)=='8' else '1.22×3.66')+f' m (4×{m.group(1)} ft)',n)
         if comma:
             n=locd(n,lang)
             n=re.sub(r'(?<![\d.,])\d{4,}(?!\d|[.,]\d)',lambda m:THD[m.group(0)].replace(',',SEP.get(lang,'.')) if m.group(0) in THD else m.group(0),n)
