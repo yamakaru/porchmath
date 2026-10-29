@@ -101,6 +101,8 @@ def page(path,lang):
             n=t
         else:
             n=conv(t,comma,state) if re.search(r'lb|ft|in\b|yd',t) else t
+        if not cl&{'us','usb','usc','nocv'}:
+            n=re.sub(r'(?<![\d.,×(/])4\s?×\s?(8|12)(?![\d.,×]|\s?(?:ft|m\b|mm|cm|in\b|\(|×|=|/|sq))',lambda m:('1.22×2.44' if m.group(1)=='8' else '1.22×3.66')+f' m (4×{m.group(1)} ft)',n)
         if comma:
             n=locd(n,lang)
             n=re.sub(r'(?<![\d.,])\d{4,}(?!\d|[.,]\d)',lambda m:THD[m.group(0)].replace(',',SEP.get(lang,'.')) if m.group(0) in THD else m.group(0),n)
