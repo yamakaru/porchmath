@@ -21,11 +21,11 @@ def val(s):
     if s and s[-1] in FR:f=FR[s[-1]];s=s[:-1]
     if isth(s):return float(re.sub(r'\D','',s))+f
     return (float(s.replace(',','.')) if s else 0)+f
-def fmt(x,d,comma):
+def fmt(x,d,comma,keep=False):
     import math
     if x and abs(x)<1:d=max(d,1-int(math.floor(math.log10(abs(x)))))
     s=f"{x:.{d}f}"
-    if d: s=s.rstrip('0').rstrip('.')
+    if d and not keep: s=s.rstrip('0').rstrip('.')
     return s.replace('.',',') if comma else s
 def conv(t,comma,state):
     _P=[]
@@ -49,9 +49,9 @@ def _conv(t,comma,state):
     t=R(t,r'sq in(?![A-Za-z])',6.4516,0,'cm²','sq in')
     t=R(t,r'gal(?:lons?)?(?![A-Za-z])(?!\s*\()',3.78541,1,'L','gal')
     def dims(m,unit,mul,d,out):
-        parts=re.split(r'(\s*[×x–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)',m.group(1))
-        return ''.join(F(val(p)*mul,(2 if out=='m' and val(p)*mul<10 else d)) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
-    t=re.sub(rf'(?<![\d.,])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
+        parts=re.split(r'(\s+/\s+|\s*[×x–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)',m.group(1))
+        return ''.join((fmt(val(p)*mul,2,comma,True) if out=='m' and val(p)*mul<10 else F(val(p)*mul,d)) if i%2==0 else p for i,p in enumerate(parts))+f" {out} ({m.group(1)} {unit})"
+    t=re.sub(rf'(?<![\d.,/])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+/\s+|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*ft(?![A-Za-z])',lambda m:dims(m,'ft',0.3048,1,'m'),t)
     FQ=lambda q:F(int(q.split('/')[0])/int(q.split('/')[1])*25.4+1e-9,1)
     t=re.sub(r'(?<![\d.,/(])(\d+/\d+)(?:(\s*[–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+)(\d+/\d+))? in(?![A-Za-z-])(?!\s*\()',lambda m:FQ(m.group(1))+(('–'+FQ(m.group(3))) if m.group(3) else '')+f' mm ({m.group(1)}'+((m.group(2)+m.group(3)) if m.group(3) else '')+' in)',t)
     t=re.sub(rf'(?<![\d.,A-Za-z/])({NUM}(?:(?:\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+){NUM})*)\s*in(?![A-Za-z-])',lambda m:dims(m,'in',25.4,0,'mm') if ('×' in m.group(1) or any(c in m.group(1) for c in FR) or val(re.split(r'\s*[×–〜~-]\s*|\s+(?:à|a|bis|hingga|sampai|đến|to|até|al)\s+',m.group(1))[0])<2) else dims(m,'in',2.54,0,'cm'),t)
