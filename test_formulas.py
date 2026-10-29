@@ -32,7 +32,7 @@ case("roofing-calculator",dict(A=1500,R=6,X=10,B=3),{"Pitch":"1.118","Squares":"
 case("roofing-calculator",dict(A=1000,R=12,X=0,B=3),{"Pitch":"1.414","Bundles":43})
 case("deck-board-calculator",dict(L=16,W=12,B=5.5,G=0.125,K=16,X=10),{"Rows":26,"Boards":29,"Screws":676})
 case("fence-calculator",dict(F=100,S=8,R=3,P=5.5,G=0),{"Sections":13,"Posts":14,"Rails":39,"Pickets":219})
-case("insulation-calculator",dict(A=1000,T=38,r=3.2,C=40),{"Required":"11.9","Bags":25})
+case("insulation-calculator",dict(A=1000,T=38,RV=3.2,C=40),{"Required":"11.9","Bags":25})
 case("wallpaper-calculator",dict(P=48,H=8,w=20.5,L=33,R=0),{"Strips needed":29,"Strips per roll":4,"Rolls":8})
 case("grout-calculator",dict(A=100,L=12,W=12,J=0.125,D=0.375),{"Grout volume":"113"})
 case("paver-calculator",dict(A=200,L=8,W=4,X=10,B=4,S=1),{"Pavers":990,"Base":"2.47","Bedding":"0.62"})

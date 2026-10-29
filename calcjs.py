@@ -1,7 +1,7 @@
 # Shared calculator runtime (parser, field errors, locale formatting, US/metric) used by render.py.
 import json,re
-NOMETRIC={"paint-calculator","insulation-calculator","roofing-calculator","deck-board-calculator","stair-calculator","square-footage-calculator","cubic-yard-calculator","board-foot-calculator"}
-IN_RULES=[("(sq ft)","(m²)",10.7639),("(sq ft, ","(m², ",10.7639),("Sq ft per","m² per",10.7639),("(tons per cu yd)","(t per m³)",0.842777),("(lb per cu ft)","(kg per m³)",1/16.0185),("(lb per 1,000 sq ft)","(kg per 100 m²)",2.0482),("(cu ft)","(L)",1/28.3168),("(ft)","(m)",3.28084),("(in)","(cm)",1/2.54),("(in, ","(cm, ",1/2.54)]
+NOMETRIC={"roofing-calculator","deck-board-calculator","stair-calculator","square-footage-calculator","cubic-yard-calculator","board-foot-calculator"}
+IN_RULES=[("Coverage per gallon (sq ft)","Coverage per litre (m²)",40.7458),("(sq ft)","(m²)",10.7639),("(sq ft, ","(m², ",10.7639),("Sq ft per","m² per",10.7639),("(tons per cu yd)","(t per m³)",0.842777),("(lb per cu ft)","(kg per m³)",1/16.0185),("(lb per 1,000 sq ft)","(kg per 100 m²)",2.0482),("(cu ft)","(L)",1/28.3168),("(ft)","(m)",3.28084),("(in)","(cm)",1/2.54),("(in, ","(cm, ",1/2.54)]
 def in_unit(label):
     for a,b,f in IN_RULES:
         if a in label: return label.replace(a,b),f
@@ -9,6 +9,10 @@ def in_unit(label):
     return None,None
 def out_unit(label):
     L=label
+    if L=="Total area incl. coats": return ["Total area incl. coats (m²)",0.092903,0]
+    if L=="Gallons needed": return ["Litres needed",3.78541,1]
+    if L=="Buy": return ["Buy (litres, rounded up)",None,0,None,None,2,3.78541]
+    if L=="Required thickness (in)": return ["Required thickness (cm)",2.54,1]
     if L=="Cubic feet": return ["Liters",28.3168,0]
     if L=="Cubic yards": return ["Cubic meters",0.764555,2]
     if L.startswith("Tons"): return [L.replace("Tons","Metric tons"),0.907185,2]
@@ -80,7 +84,7 @@ def build(k,v):
         "if(OV){BAD=1;return [['Deductions (doors, windows or openings) are larger than the area','—']]}"
         "return RES.map(function(x){var s=String(x[1]);return [x[0],/NaN|Infinity/.test(s)?'—':x[1]]})}"
         "function FM(x,m){var s=String(x),r=s.match(/^(\\$?)(-?\\d+(?:\\.(\\d+))?(?:e[-+]\\d+)?)(.*)$/);if(!r)return s;var n=+r[2],d=r[3]?r[3].length:0;if(/e/i.test(r[2]))d=0;if(m){n=n*m[1];if(m[2]!=null)d=m[2]}return r[1]+NF(d).format(n)+r[4]}"
-        "function CV(o,j,m){var x=o[j];return m&&m[3]?NF(0).format(Math.ceil(+(o[0][1]/RAW[m[3]]).toFixed(6))):m&&m[4]?NF(0).format(Math.ceil(+(o[0][1]/m[4]).toFixed(6))):FM(x[1],m)}"
+        "function CV(o,j,m){var x=o[j];return m&&m[5]!=null?NF(0).format(Math.ceil(+(parseFloat(o[m[5]][1])*m[6]).toFixed(6))):m&&m[3]?NF(0).format(Math.ceil(+(o[0][1]/RAW[m[3]]).toFixed(6))):m&&m[4]?NF(0).format(Math.ceil(+(o[0][1]/m[4]).toFixed(6))):FM(x[1],m)}"
         "function run(){var u=arguments[0],o=c(),T=document.getElementById('r');T.innerHTML=o.map(function(x,j){var m=(MT&&!BAD&&MO[j])||null,val=CV(o,j,m);return '<tr><td>'+(m?m[0]:x[0])+'</td><td><b>'+val+'</b></td></tr>'}).join('');if(u&&!BAD&&window.MTrack)window.MTrack('calc')}"
         "function SV(el,x){el.value=NF(0,false,4).format(+(+x).toFixed(4))}"
         "function SW(el,m){var k=MU[el.id];if(!k)return;var s=el._pm||(el._pm={}),o=el.value,t;if(s.p===o&&s[m]!=null)t=s[m];else{var x=pnum(o);if(typeof x!='number')return;el.value=o;SV(el,m?x/k:x*k);t=el.value}s[MT]=o;el.value=t;s.p=t}"
@@ -90,7 +94,7 @@ def build(k,v):
         "var bp=document.getElementById('bp');function BP(v){if(!v)return;var a=v.split(',');['B','C','J'].forEach(function(i,j){var el=document.getElementById(i),mm=+a[j];SV(el,MT?mm/25.4:mm);var ot=el.value;SV(el,MT?mm:mm/25.4);el._pm={p:el.value};el._pm[MT?0:1]=ot;el._pm[MT]=el.value});run()}function BSZ(){var f=function(i){var e=document.getElementById(i);var x=pnum(e.value);return NF(0,false,1).format(typeof x=='number'?Math.round(x*(MT?1:25.4)*10)/10:0)};document.querySelectorAll('.bsz').forEach(function(x){x.textContent=f('B')+' × '+f('C')});document.querySelectorAll('.bjt').forEach(function(x){x.textContent=f('J')})}var rt=document.getElementById('r');if(rt&&document.querySelector('.bsz'))new MutationObserver(BSZ).observe(rt,{childList:true,subtree:true,characterData:true});if(bp){bp.addEventListener('change',function(){BP(bp.value)});document.querySelectorAll('#B,#C,#J').forEach(function(el){el.addEventListener('input',function(){bp.value=''})})}"
         "var CPT={ok:'Copied',no:'Could not copy. Select the results and copy manually.'};"
         "function CPY(t,ok,no){function fb(){var a=document.createElement('textarea'),r=false;a.value=t;a.setAttribute('readonly','');a.style.position='fixed';a.style.top='0';a.style.opacity='0';document.body.appendChild(a);a.select();try{r=document.execCommand('copy')}catch(e){}document.body.removeChild(a);if(r)ok();else no()}if(navigator.clipboard&&window.isSecureContext!==false)navigator.clipboard.writeText(t).then(ok,fb);else fb()}"
-        "var cpb=document.getElementById('cp'),cpm=document.getElementById('cpm');if(cpb)cpb.addEventListener('click',function(){if(BAD)return;var t=document.querySelector('h1').textContent+'\\n'+[].map.call(document.querySelectorAll('#r tr'),function(r){return r.cells[0].textContent+': '+r.cells[1].textContent}).join('\\n');"
+        "var cpb=document.getElementById('cp'),cpm=document.getElementById('cpm');if(cpb)cpb.addEventListener('click',function(){if(BAD){var e=document.querySelector('#r td');if(cpm){cpm.textContent=e?e.textContent:'';cpm.className='cpm err'}return}var t=document.querySelector('h1').textContent+'\\n'+[].map.call(document.querySelectorAll('#r tr'),function(r){return r.cells[0].textContent+': '+r.cells[1].textContent}).join('\\n');"
         "if(!cpb._o)cpb._o=cpb.textContent;function sh(ok){clearTimeout(cpb._t);cpb.textContent=ok?'✓ '+CPT.ok:cpb._o;cpb.classList.toggle('ok',ok);if(cpm){cpm.textContent=ok?CPT.ok:CPT.no;cpm.className=ok?'cpm':'cpm err'}if(!ok){var rg=document.createRange(),tb=document.getElementById('r');if(tb&&window.getSelection){rg.selectNodeContents(tb);var sl=window.getSelection();sl.removeAllRanges();sl.addRange(rg)}}cpb._t=setTimeout(function(){cpb.textContent=cpb._o;cpb.classList.remove('ok');if(cpm&&ok)cpm.textContent=''},ok?2000:6000)}"
         "CPY(t,function(){sh(true);if(window.MTrack)window.MTrack('copy')},function(){sh(false)})});"
         "if(!/^(en|ja)/.test(LOC)){var DC=function(){document.querySelectorAll('#r td:first-child,#r th,#bp option').forEach(function(e){var t=e.textContent;if(e._dc===t)return;var u=t.replace(/(\d)\.(\d)/g,'$1,$2');e._dc=u;if(u!==t)e.textContent=u})};DC();var rr=document.getElementById('r');if(rr)new MutationObserver(DC).observe(rr,{childList:true,subtree:true,characterData:true})}run();if(Object.keys(MU).length){var st=null;try{st=localStorage.getItem('pmu')}catch(e){}SU(st!=null?+st:(/^en/.test(LOC)?0:1));if(bp&&(MT||/^vi/.test(LOC))){bp.value=/^vi/.test(LOC)?'220,60,10':'215,65,10';BP(bp.value)}if(bp&&MT){var ea=document.getElementById('A');SV(ea,10);ea._pm={p:ea.value,1:ea.value};run()}}")
