@@ -108,7 +108,7 @@ chk("metric m3",jsrun("concrete-calculator",{},"de","FM('%.2f',MO[1])"%(cf/27)),
 chk("no metric on stair",jsrun("stair-calculator",{},"de","Object.keys(MU).length"),0)
 # QA round 29 Oct 16:58
 cf=3*3.28084*3*3.28084*(10/2.54/12)
-chk("metric concrete bag labels",[jsrun("concrete-calculator",{},"en","MO[%d][0]"%j) for j in (2,3,4)],["50 kg bags (≈0.023 m³ each)","40 kg bags (≈0.019 m³ each)","25 kg bags (≈0.012 m³ each)"])
+chk("metric concrete bag labels",[jsrun("concrete-calculator",{},"en","MO[%d][0]"%j) for j in (2,3,4)],["50 kg bags (0.0234 m³ each)","40 kg bags (0.0187 m³ each)","25 kg bags (0.0117 m³ each)"])
 import math
 vol=3*3*0.10;chk("metric 50 kg bags",jsrun("concrete-calculator",dict(L=3,W=3,T=10,X=0),"en","CV(c(),2,MO[2])",mt=1),str(math.ceil(vol/(50*0.6/36.2874/35.3147))))
 chk("metric 25 kg bags",jsrun("concrete-calculator",dict(L=3,W=3,T=10,X=0),"en","CV(c(),4,MO[4])",mt=1),str(math.ceil(vol/(25*0.6/36.2874/35.3147))))

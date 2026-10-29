@@ -44,7 +44,7 @@ def build(k,v):
             if r=="Pieces of ": MO.append(["Pieces",1,0])
             elif r=="80 lb mortar bags" and k=="brick-calculator": MO.append(["50 kg mortar bags",None,0,"M"])
             elif k=="concrete-calculator" and re.match(r"(80|60|40) lb bags \(", r):
-                kg={"80":50,"60":40,"40":25}[r.split()[0]];MO.append([f"{kg} kg bags (≈{kg*0.6/36.2874/35.3147:.3f} m³ each)",None,0,None,kg*0.6/36.2874])
+                kg={"80":50,"60":40,"40":25}[r.split()[0]];ym=round(kg*0.6/36.2874/35.3147,4);MO.append([f"{kg} kg bags ({ym:.4f} m³ each)",None,0,None,ym*35.3146667])
             else: MO.append(out_unit(r))
     if k=='brick-calculator' and metric:
         for j in (1,2): MO[j]=[MO[j][0],1,None]+MO[j][3:]

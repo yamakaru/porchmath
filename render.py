@@ -1,5 +1,5 @@
 from metric_src import MG,MD
-MNOTE={"concrete-calculator":"Based on premixed concrete bags: 50 kg ≈ 0.023 m³, 40 kg ≈ 0.019 m³, 25 kg ≈ 0.012 m³. Brands vary slightly — check the label.","brick-calculator":"Based on the selected brick (<b class='bsz'>220 × 60</b> mm face) with <b class='bjt'>10</b> mm joints; one 50 kg bag of mortar mix lays roughly 50 standard bricks. Check your brick spec and bag label."}
+MNOTE={"concrete-calculator":"Based on premixed concrete bags: 50 kg ≈ 0.0234 m³, 40 kg ≈ 0.0187 m³, 25 kg ≈ 0.0117 m³. Brands vary slightly — check the label.","brick-calculator":"Based on the selected brick (<b class='bsz'>220 × 60</b> mm face) with <b class='bjt'>10</b> mm joints; one 50 kg bag of mortar mix lays roughly 50 standard bricks. Check your brick spec and bag label."}
 MSUB={"brick-calculator":"Wall area, brick size and mortar joint to bricks per square metre, total bricks with waste and 50 kg bags of mortar.","concrete-calculator":"Enter slab length, width and thickness to get cubic metres and the number of 25, 40 or 50 kg bags needed."}
 def SUBT(k,v):
     t=v['d'].split(': ',1)[-1];t=t[:1].upper()+t[1:]
