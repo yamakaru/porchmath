@@ -1,5 +1,5 @@
 MNOTE={"concrete-calculator":"Based on premixed concrete bags: 50 kg ≈ 0.023 m³, 40 kg ≈ 0.019 m³, 25 kg ≈ 0.012 m³. Brands vary slightly — check the label.","brick-calculator":"Based on US modular brick (194 × 57 mm) with 10 mm joints; one 50 kg bag of mortar mix lays up to about 50 bricks. Check your brick spec and bag label."}
-MSUB={"concrete-calculator":"Enter slab length, width and thickness to get cubic metres and the number of 25, 40 or 50 kg bags needed."}
+MSUB={"brick-calculator":"Wall area, brick size and mortar joint to bricks per square metre, total bricks with waste and 50 kg bags of mortar.","concrete-calculator":"Enter slab length, width and thickness to get cubic metres and the number of 25, 40 or 50 kg bags needed."}
 def SUBT(k,v):
     t=v['d'].split(': ',1)[-1];t=t[:1].upper()+t[1:]
     return f"<span class='us'>{t}</span><span class='mt'>{MSUB[k]}</span>" if k in MSUB else t
