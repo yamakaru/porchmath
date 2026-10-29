@@ -67,4 +67,43 @@ for slug,inp,exp in T:
     for k,v in exp.items():
         g=get(r,k)
         if str(g)!=str(v):print("FAIL",slug,inp,k,"got",g,"want",v);fail+=1
+
+# ---- regression tests for QA report (Oct 29 2026) ----
+def jsrun(slug,inp,lang="en",expr="c()",mt=0):
+    js=re.search(r"<script>(function U.*?)</script>",page(slug),re.S).group(1).split("function run()")[0]
+    stub="var V=%s;var document={documentElement:{lang:%s},getElementById:function(i){return {value:V[i]}}};"%(json.dumps({k:str(v) for k,v in inp.items()}),json.dumps(lang))
+    return json.loads(subprocess.run(["node","-e",stub+js+";MT=%d;console.log(JSON.stringify(%s))"%(mt,expr)],capture_output=True,text=True,check=True).stdout)
+def chk(name,got,want):
+    global fail
+    if got!=want:print("REGRESSION FAIL",name,"got",got,"want",want);fail+=1
+base=dict(L=10,W=10,T=4,X=10)
+# Bug 1: comma decimals
+for lang,val,want in [("en","1,5",1.5),("en","1.5",1.5),("en","1,500",1500),("en","1,234.5",1234.5),("de","1,5",1.5),("de","1.234,5",1234.5),("de","1,234.5",1234.5),("vi","1,5",1.5),("fr","1,5",1.5),("fr","1 234,5",1234.5),("ja","1,500",1500),("en"," 2 ",2),("en","1e3",1000)]:
+    chk(f"parse {lang} {val!r}",jsrun("concrete-calculator",{},lang,"pnum(%s)"%json.dumps(val)),want)
+for lang,val,want in [("de","1.500","A"),("es","2.500","A"),("vi","1.500","A"),("en","","E"),("en","abc","N"),("en","1,2,3","N"),("en","1.2.3","N"),("en","--1","N")]:
+    chk(f"parse error {lang} {val!r}",jsrun("concrete-calculator",{},lang,"pnum(%s)"%json.dumps(val)),want)
+# 10 x 1,5 ft slab 4in 0% waste = 5 cu ft (was computed as 50 with the old number input)
+r={a:b for a,b in jsrun("concrete-calculator",dict(L=10,W="1,5",T=4,X=0),"vi")};chk("vi 1,5 cubic feet",r.get("Cubic feet"),"5.00")
+r={a:b for a,b in jsrun("concrete-calculator",dict(L=10,W="1,5",T=4,X=0),"en")};chk("en 1,5 cubic feet",r.get("Cubic feet"),"5.00")
+r=jsrun("concrete-calculator",dict(L=10,W="1.500",T=4,X=0),"de");chk("de ambiguous -> error row",r[0][0],"Please check the highlighted fields")
+r=jsrun("concrete-calculator",dict(L="",W=10,T=4,X=0),"en");chk("empty -> error row",r[0][0],"Please check the highlighted fields")
+r=jsrun("concrete-calculator",dict(L="1e300",W=10,T=4,X=0),"en");chk("too large -> error row",r[0][0],"Please check the highlighted fields")
+# Bug 5: deductions larger than area
+r=jsrun("brick-calculator",dict(A=100,O=150,B=7.625,C=2.25,J=0.375,X=10,M=37));chk("brick openings>area",r[0][0],"Deductions (doors, windows or openings) are larger than the area")
+r=jsrun("paint-calculator",dict(P=10,H=2,D=2,N=0,C=2,V=350));chk("paint doors>area",r[0][0],"Deductions (doors, windows or openings) are larger than the area")
+r=jsrun("baseboard-calculator",dict(P=5,D=3,O=3,K=12,X=10));chk("baseboard doorways>perimeter",r[0][0],"Deductions (doors, windows or openings) are larger than the area")
+# Bug 4 + large numbers: locale formatting, never e+
+chk("de format 36.67",jsrun("concrete-calculator",{},"de","FM('36.67')"),"36,67")
+chk("vi format",jsrun("concrete-calculator",{},"vi","FM('1234567.89')"),"1.234.567,89")
+chk("en grouping",jsrun("concrete-calculator",{},"en","FM('1234567.89')"),"1,234,567.89")
+chk("en $",jsrun("concrete-calculator",{},"en","FM('$1234.50')"),"$1,234.50")
+chk("fr gallons",jsrun("concrete-calculator",{},"fr","FM('1234 gallon(s)')"),"1\u202f234 gallon(s)")
+chk("no e+",jsrun("concrete-calculator",{},"en","FM((1e9*1e9*1e9).toFixed(2))"),"1,000,000,000,000,000,000,000,000,000")
+x=jsrun("concrete-calculator",{},"de","FM(123456789012345678901234)");chk("no e+ int",("e" in x.lower(),x.count(".")),(False,7))
+# Bug 4: metric (inputs in m/cm -> same physical result)
+r={a:b for a,b in jsrun("concrete-calculator",dict(L=3,W=3,T=10,X=0),"de",mt=1)};cf=3*3.28084*3*3.28084*(10/2.54/12)
+chk("metric concrete cu ft",r.get("Cubic feet"),"%.2f"%cf)
+chk("metric output label",jsrun("concrete-calculator",{},"de","MO[1][0]"),"Cubic meters")
+chk("metric m3",jsrun("concrete-calculator",{},"de","FM('%.2f',MO[1])"%(cf/27)),"0,90")
+chk("no metric on stair",jsrun("stair-calculator",{},"de","Object.keys(MU).length"),0)
 print("ALL PASS" if not fail else f"{fail} failures");sys.exit(1 if fail else 0)
