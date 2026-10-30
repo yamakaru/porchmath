@@ -28,3 +28,5 @@ exec(open("tools2.py").read());tools.update(T2)
 exec(open("tools3.py").read());tools.update(T3)
 exec(open("render.py").read())
 import subprocess as _sp;_sp.run(["python3","metricize.py"],check=True)
+
+_sp.run(["python3","searchidx.py"],check=True)
