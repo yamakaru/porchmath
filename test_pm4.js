@@ -11,20 +11,23 @@ const R=async()=>p.evaluate(()=>[...document.querySelectorAll('#r tr')].map(r=>r
 const has=async(s,m)=>{const r=await R();ok(r.includes(s),m+' expected '+s+' got '+r)};
 const not=async(s,m)=>{const r=await R();ok(!r.includes(s),m+' unexpected '+s+' got '+r)};
 // cubic feet
-await go('cubic-feet-calculator','0');await has('Cubic feet (ft³)=24','C1');await has('0.889','C1yd');await has('0.68','C1m3');
+await go('cubic-feet-calculator','0');await has('Cubic feet (ft³)=24','C1');await has('0.889','C1yd');await has('0.680','C1m3');
 await p.fill('#items .it:nth-child(1) [data-i=l]','24');await p.fill('#items .it:nth-child(1) [data-i=w]','18');await p.fill('#items .it:nth-child(1) [data-i=h]','12');
-for(const c of ['l','w','h'])await p.selectOption(`#items .it:nth-child(1) [data-i=${c}u]`,'in');await has('Cubic feet (ft³)=3 ','C2 inches');
+for(const c of ['l','w','h'])await p.selectOption(`#items .it:nth-child(1) [data-i=${c}u]`,'in');await has('Cubic feet (ft³)=3.00 ','C2 inches');
 await p.click('#add');await p.click('#add');await p.fill('#items .it:nth-child(2) [data-i=l]','1,5');await p.selectOption('#items .it:nth-child(2) [data-i=lu]','m');
 await p.click('#items .it:nth-child(2) .rm');await p.waitForTimeout(50);let n=await p.$$eval('#items .it',a=>a.length);ok(n==2,'P4 rows');await has('Cubic feet (ft³)=6','P4 sum');
 await p.fill('#items .it:nth-child(1) [data-i=l]','');await has('Please check','empty');await p.fill('#items .it:nth-child(1) [data-i=l]','-2');await has('Please check','neg');
 await p.fill('#items .it:nth-child(1) [data-i=l]','24');await p.selectOption('#items .it:nth-child(1) .sh','c');await p.fill('#items .it:nth-child(1) [data-i=d]','12');
 await go('cubic-feet-calculator','1');await has('Cubic meters (m³)=0.648','C metric default');
+// PM-01 regression: huge input -> message, no garbage numbers
+await go('cubic-feet-calculator','0');await p.fill('#items .it:nth-child(1) [data-i=l]','1000000000');await has('too large','PM-01 huge');await not('e+','PM-01 no exp');
+await p.fill('#items .it:nth-child(1) [data-i=l]','1e400');await has('Please check','PM-01 inf');
 // voltage
 await go('voltage-drop-calculator','0');await has('=6.32 V','V0');await has('5.27 %','V0p');await has('Warning','V0w');await has('≤ 3 %=8 AWG','V0 smallest');
 await set('L','150');await set('I','20');await has('9.88 %','Vx');await sel('cd','al');await set('L','100');await set('I','16');await has('10.39 V','V1');await has('8.66 %','V1p');await has('Warning','V1w');
 await sel('vs','480');await sel('ph','3');await sel('cd','cu');await sel('ws','5');await set('L','200');await set('I','50');await has('5.35 V','V2');await has('1.12 %','V2p /* 5.3537/480 = 1.1153 %; addendum says 1.11 (truncated) */');await has('OK:','V2ok');
 await sel('ph','1');await sel('vs','120');await set('I','0');await has('Please check','V4 zero I');await sel('vs','c');await set('vc','0');await has('Please check','V4 zero V');
-let b7=await p.evaluate(()=>{var L=0.03*120*6530/(25.8*10);return [PM4.SMALL(0,'1',true,120,L,10),PM4.SMALL(0,'1',true,120,L*1.001,10)]});ok(b7[0]==1&&b7[1]==2,'V7 boundary '+b7);
+let b7=await p.evaluate(()=>{var L=0.03*120*6530/(25.8*10);return [PM4.SMALL(0,'1',true,120,L,10),PM4.SMALL(0,'1',true,120,L*1.01,10),PM4.SMALL(0,'1',true,120,L*1.0016,10)]});ok(b7[0]==1&&b7[1]==2&&b7[2]==1,'V7 boundary '+b7);
 await go('voltage-drop-calculator','0');await sel('vs','240');await set('L','50');await sel('ws','2');await set('I','30');await has('3.73 V','V240');
 await go('voltage-drop-calculator','0');await sel('ws','0');await set('L','2000');await set('I','30');await has('Wire too small','V5');await has('Voltage at load=—','V5b');await set('L','5000');await has('None in the table','V6');
 await go('voltage-drop-calculator','1');await sel('vs','230');await has('6.60 V','V3');await has('2.87 %','V3p');await has('2.5 mm² (≈14 AWG)','V9');
