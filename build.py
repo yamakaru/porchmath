@@ -26,6 +26,10 @@ g="""<h2>Tile formula</h2><p>Tiles = floor area ÷ area of one tile, plus waste.
 }
 exec(open("tools2.py").read());tools.update(T2)
 exec(open("tools3.py").read());tools.update(T3)
+import calcjs as CJ
+exec(open("tools4.py").read());tools.update(T4)
+for _k,_v in T4.items():
+    if _k not in CATS[_v["cat"]]: CATS[_v["cat"]].append(_k)
 exec(open("render.py").read())
 import subprocess as _sp;_sp.run(["python3","metricize.py"],check=True)
 

@@ -104,7 +104,7 @@ def page(path,lang):
         if not cl&{'us','usb','usc','nocv'}:
             n=re.sub(r'(?<![\d.,×(/])8\s?×\s?8\s?×\s?16(?![\d×]|[.,]\d|\s?(?:in\b|mm|cm|\())','200×200×400 mm (8×8×16 in)',n)
             n=re.sub(r'(?<![\d.,×(/])4\s?×\s?(8|12)(?![\d×]|[.,]\d|\s?(?:ft|m\b|mm|cm|in\b|\(|×|=|/|sq))',lambda m:('1.22×2.44' if m.group(1)=='8' else '1.22×3.66')+f' m (4×{m.group(1)} ft)',n)
-        if comma:
+        if comma and 'nod' not in cl:
             n=locd(n,lang)
             n=re.sub(r'(?<![\d.,])\d{4,}(?!\d|[.,]\d)',lambda m:THD[m.group(0)].replace(',',SEP.get(lang,'.')) if m.group(0) in THD else m.group(0),n)
         if n!=t0:node.replace_with(n);ch+=1

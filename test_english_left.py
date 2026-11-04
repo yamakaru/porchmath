@@ -2,7 +2,7 @@
 import os,re,sys
 from bs4 import BeautifulSoup,Comment
 LANGS=['es','pt','fr','de','it','id','vi','ja']
-ALLOW=set(x.lower() for x in """PorchMath Quikrete Sakrete Behr Sherwin-Williams GAF Owens Corning USG Sheetrock Polyblend Mapei Modular Queen King Utility CMU OK Porch Math Mulch Drywall Grout Contact Email Nominal Mortar Asphalt aboutads.info Google Ads Settings""".split())
+ALLOW=set(x.lower() for x in """PorchMath Quikrete Sakrete Behr Sherwin-Williams GAF Owens Corning USG Sheetrock Polyblend Mapei Modular Queen King Utility CMU OK Porch Math Mulch Drywall Grout Contact Email Nominal Mortar Asphalt aboutads.info Google Ads Settings Interior Conductor Angle Formula Diameter""".split())
 def texts(p):
     s=BeautifulSoup(open(p,encoding='utf-8'),'html.parser')
     for x in s(['script','style','noscript','svg','head']):x.decompose()

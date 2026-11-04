@@ -1,0 +1,8 @@
+function BPS(){var v=$('bp').value;if(!v)return;var a=v.split(','),us=[+a[0],+a[1]],mm=[+a[2],+a[3]];['BL','BH'].forEach(function(i,j){var el=$(i);SV(el,MT?mm[j]:us[j]);el._pm=null});if(!$('CL')._t){SV($('CL'),MT?mm[0]:us[0])}run(1)}
+var ONI=0;function ONU(m){MT=m;[].forEach.call($('bp').options,function(o){if(!o.value)return;var a=o.value.split(',');o.textContent=m?a[2]+' × '+a[3]+' mm ('+a[0]+' × '+a[1]+' in)':a[0]+' × '+a[1]+' in ('+a[2]+' × '+a[3]+' mm)'});if(!ONI){ONI=1;$('bp').addEventListener('change',BPS);['BL','BH'].forEach(function(i){$(i).addEventListener('input',function(){$('bp').value=''})});$('CL').addEventListener('input',function(){$('CL')._t=1})}}
+function CALC(){var L=N('L'),H=N('H'),BL=N('BL'),BH=N('BH'),CL=N('CL'),GD=N('GD',{z:1}),X=N('X',{z:1}),bu=$('bu').checked,dr=$('dr').checked;
+ if(ERR)return null;if(X>100){FE($('X'),'B');ERR=1;return null}
+ var f=MT?1000:12,c=UP(H*f/BH)+(bu?1:0),p=UP(L*f/BL),b0=c*p,b=UP(b0*(1+X/100)),cap=UP(L*f/CL),gh=H+(bu?BH/f:0),gv=MT?L*gh*GD/100:L*gh*GD/12/27,t=MT?gv*1.4/0.764555*0.907185:gv*1.4,U=MT?' m':' ft';
+ var rows=[['Total blocks incl. waste',F(b,0)],['Courses (rows)',F(c,0)],['Blocks per course',F(p,0)],['Blocks before waste',F(b0,0)],['Cap blocks',F(cap,0)],[MT?'Gravel backfill (m³)':'Gravel backfill (yd³)',F(gv,2)],[MT?'Gravel backfill (metric tons, ≈1.66 t/m³)':'Gravel backfill (tons, ≈1.4 t/yd³)',F(t,2)]];
+ if(dr)rows.push(['Perforated drain pipe',F(L,0,1)+U]);
+ var tall=MT?H>1.2+1e-9:H>4+1e-9;return {rows:rows,warn:tall?'Over 4 ft (1.2 m): retaining walls this tall need an engineered design under IRC R404.4 and often a permit. Check with your building department.':''}}

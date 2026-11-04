@@ -14,6 +14,7 @@ for l in L:
         if os.path.exists(ep):TH.update(re.findall(r'[1-9]\d{0,2}(?:,\d{3})+',open(ep,encoding='utf-8').read()))
         s=BeautifulSoup(open(os.path.join(r,'index.html'),encoding='utf-8'),'html.parser')
         for x in s(['script','style','head']):x.decompose()
+        for x in s.select('.nod'):x.decompose()
         for t in s.find_all(string=True):
             if isinstance(t,Comment):continue
             for m in DOT.finditer(t):

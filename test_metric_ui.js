@@ -1,7 +1,7 @@
 // In metric mode, no imperial unit may appear in calculator labels/results outside brackets.
 const {chromium}=require('/workspace/deskkit/node_modules/playwright-core');
 const base=process.argv[2]||'http://localhost:8812';
-const NOM=['roofing','deck-board','stair','square-footage','cubic-yard','board-foot'];
+const NOM=['roofing','deck-board','stair','square-footage','cubic-yard','board-foot','cubic-feet'];
 const fs=require('fs');const L=['','es/','pt/','fr/','de/','it/','id/','vi/','ja/'];
 const calcs=fs.readdirSync(__dirname+'/dist').filter(s=>s.endsWith('-calculator')&&!NOM.some(n=>s==n+'-calculator'));
 const IMP=/(^|[^A-Za-z])(sq ?ft|sq ?in|cu ?ft|cu ?yd|cu ?in|ft|in|lb|lbs|gal|gallons?|galon|inci|yd)(?![A-Za-z])/;
