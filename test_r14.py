@@ -3,6 +3,8 @@ import re,glob,sys
 bad=[]
 for p in glob.glob('dist/**/index.html',recursive=True):
     s=re.sub(r'<script.*?</script>','',open(p,encoding='utf-8').read(),flags=re.S)
+    for m in re.finditer(r"<div class=[\"']rel nocv[\"']>(.*?)</section>",s,flags=re.S):
+        if '(= ' in re.sub(r'<[^>]*>','',m.group(1)):bad.append((p,'rel-metricized','(= in related blurbs'))
     for m in re.finditer(r'\b\d+×\d+ / [\d.,]+×[\d.,]+ m\b',s):bad.append((p,'slash',m.group(0)))
     for m in re.finditer(r'(?<![\d.,])\d+(?:[.,]\d)? m \([^()]*ft\)',s):
         if float(m.group(0).split()[0].replace(',','.'))<10 and not ('retaining-wall' in p and m.group(0) in ('1,2 m (4 ft)','1.2 m (4 ft)')):bad.append((p,'ft-dec',m.group(0)))
