@@ -9,7 +9,7 @@ with sync_playwright() as p:
   for t in S:
     u,q,exp,top,no,cnt=(tuple(t)+(None,[],0)[len(t)-3:])
     pg.goto(u+E);pg.type('#q',q,delay=20) if q else None;pg.wait_for_timeout(300)
-    r=pg.evaluate("()=>[[...document.querySelectorAll('#all .card')].filter(c=>!c.hidden).map(c=>[c.querySelector('h3').innerText,c.getAttribute('href').split('/').filter(Boolean).pop()]),!document.getElementById('none').hidden]")
+    r=pg.evaluate("()=>[[...document.querySelectorAll('#all .card')].filter(c=>!c.hidden).map(c=>[c.querySelector('h3').innerText,new URL(c.href).pathname.split('/').filter(Boolean).pop()]),!document.getElementById('none').hidden]")
     hs=[x[1] for x in r[0]];tot=pg.evaluate("document.querySelectorAll('#all .card').length");ok=(len(r[0])>0)==exp and r[1]==(not exp) and (not top or (hs and hs[0]==top)) and not set(no)&set(hs) and (not cnt or len(hs)==(tot if cnt<0 else cnt)); bad+=not ok
     print('OK ' if ok else 'BAD',u,repr(q),'top3',[x[0] for x in r[0][:3]],len(hs),'msg' if r[1] else '')
   for w in (360,390,820):
