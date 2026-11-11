@@ -34,3 +34,5 @@ exec(open("render.py").read())
 import subprocess as _sp;_sp.run(["python3","metricize.py"],check=True)
 
 _sp.run(["python3","searchidx.py"],check=True)
+
+_sp.run(["python3","seo_post.py"],check=True)

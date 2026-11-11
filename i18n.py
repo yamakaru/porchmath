@@ -110,6 +110,7 @@ def pages():
     for f in glob.glob(D+"/**/*.html",recursive=True):
         rel=f[len(D)+1:]
         if rel.split("/")[0] in LANGS:continue
+        if rel=="404.html":continue
         out.append(rel)
     return sorted(out)
 def path_of(rel):return "/" if rel in("index.html","404.html") else "/"+rel[:-len("index.html")]

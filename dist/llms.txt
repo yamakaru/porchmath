@@ -1,0 +1,44 @@
+# PorchMath
+
+> Free calculators for concrete, paint, flooring, roofing, fencing, mulch, gravel and more. Fast, mobile-friendly, with how-to guides.
+
+## Calculators
+
+- [Asphalt Calculator](https://porchmath.com/asphalt-calculator/): Asphalt calculator: driveway length, width and compacted thickness to cubic yards and tons of hot mix asphalt.
+- [Baseboard & Trim Calculator](https://porchmath.com/baseboard-calculator/): Baseboard calculator: room perimeter minus doorways to linear feet of trim and number of 8, 12 or 16 ft pieces.
+- [Board Foot Calculator](https://porchmath.com/board-foot-calculator/): Board foot calculator: thickness and width in inches, length in feet and quantity to board feet, linear feet and lumber cost.
+- [Brick Calculator](https://porchmath.com/brick-calculator/): Brick calculator: wall area, brick size and mortar joint to bricks per square foot, total bricks with waste and 80 lb (or 50 kg) bags of mortar.
+- [Concrete Block Calculator](https://porchmath.com/concrete-block-calculator/): Concrete block calculator: wall length and height to the number of 8×8×16 cinder blocks (CMU), courses and 80 lb bags of mortar mix.
+- [Concrete Slab Calculator](https://porchmath.com/concrete-calculator/): Free concrete calculator: enter slab length, width and thickness to get cubic yards, cubic feet and the number of 40, 60 or 80 lb (25, 40 or 50 kg) bags needed.
+- [Concrete Slab Cost Calculator](https://porchmath.com/concrete-slab-cost-calculator/): Concrete slab cost calculator: slab size and thickness to volume with waste, bags needed and the cost of bags versus a ready-mix truck using your local prices.
+- [Cubic Feet Calculator](https://porchmath.com/cubic-feet-calculator/): Cubic feet calculator: add boxes or cylinders in mixed units and get the total volume in cubic feet, cubic yards, cubic meters, liters and gallons.
+- [Cubic Yard Calculator](https://porchmath.com/cubic-yard-calculator/): Cubic yard calculator: length and width in feet and depth in inches to cubic yards, cubic feet, cubic meters and cost for soil, mulch, gravel or concrete.
+- [Deck Board Calculator](https://porchmath.com/deck-board-calculator/): Deck board calculator: deck length and width, board width and gap to rows, linear feet, board count and deck screws.
+- [Drywall Calculator](https://porchmath.com/drywall-calculator/): Drywall calculator: enter room perimeter, wall height and ceiling area to get 4×8 and 4×12 sheet counts plus joint compound and screws.
+- [Fence Calculator](https://porchmath.com/fence-calculator/): Wood fence calculator: fence length and post spacing to posts, rails, pickets and concrete bags for posts.
+- [Flooring Calculator](https://porchmath.com/flooring-calculator/): Flooring calculator for laminate, LVP and hardwood: room size to square footage and boxes, with waste for cuts.
+- [Gravel Calculator](https://porchmath.com/gravel-calculator/): Gravel calculator for driveways, paths and patios: get cubic yards and tons from length, width and depth.
+- [Grout Calculator](https://porchmath.com/grout-calculator/): Grout calculator: tile size, joint width and depth to grout volume and pounds needed for your floor or wall.
+- [Insulation Calculator](https://porchmath.com/insulation-calculator/): Insulation calculator: area and target R-value to required thickness and number of bags or batts packages.
+- [Mulch Calculator](https://porchmath.com/mulch-calculator/): Calculate how much mulch you need: bed area and depth to cubic yards and 2 or 3 cubic foot bags.
+- [Room Paint Calculator](https://porchmath.com/paint-calculator/): Estimate gallons of paint for a room: enter wall dimensions, doors, windows and coats. Uses 350–400 sq ft per gallon coverage.
+- [Paver & Brick Calculator](https://porchmath.com/paver-calculator/): Paver calculator for patios and walkways: paver count plus base gravel and bedding sand in cubic yards.
+- [Retaining Wall Calculator](https://porchmath.com/retaining-wall-calculator/): Retaining wall block calculator: wall length and height to courses, blocks with waste, cap blocks, gravel backfill and drain pipe.
+- [Roof Pitch Calculator](https://porchmath.com/roof-pitch-calculator/): Roof pitch calculator: rise and run, angle or span to pitch in x/12, degrees, slope percent, pitch multiplier and rafter length with overhang.
+- [Roofing Shingle Calculator](https://porchmath.com/roofing-calculator/): Roof shingle calculator: footprint area and roof pitch to roof area, roofing squares and bundles of shingles.
+- [Sand Calculator](https://porchmath.com/sand-calculator/): Sand calculator for paver bedding, sandboxes and fill: length, width and depth to cubic yards, tons and bags.
+- [Sod & Grass Seed Calculator](https://porchmath.com/sod-grass-seed-calculator/): Lawn calculator: area to sod pieces and pallets, or pounds of grass seed at your seeding rate.
+- [Square Footage Calculator](https://porchmath.com/square-footage-calculator/): Square footage calculator: enter length and width in feet to get square feet, square yards, square meters, acres and total cost at your price per sq ft.
+- [Stair Calculator](https://porchmath.com/stair-calculator/): Stair calculator: total rise to number of steps, riser height, total run and stringer length, checked against IRC limits.
+- [Tile Calculator](https://porchmath.com/tile-calculator/): Tile calculator for floors and walls: enter area and tile size to get tile count and boxes, with waste for cuts.
+- [Topsoil Calculator](https://porchmath.com/topsoil-calculator/): Topsoil calculator: area and depth to cubic yards, approximate tons and bags of topsoil for lawns and garden beds.
+- [Voltage Drop Calculator](https://porchmath.com/voltage-drop-calculator/): Voltage drop calculator: enter voltage, current, one-way length and copper or aluminum wire to get the drop, percent and the smallest size that stays within 3 percent.
+- [Wallpaper Calculator](https://porchmath.com/wallpaper-calculator/): Wallpaper calculator using the strip method: room perimeter, wall height, roll size and pattern repeat to rolls needed.
+
+## About
+
+- [About](https://porchmath.com/about/): who we are and how we check the math
+- [Privacy Policy](https://porchmath.com/privacy/)
+- [Contact](https://porchmath.com/contact/)
+
+Other languages: [/es/](https://porchmath.com/es/) [/pt/](https://porchmath.com/pt/) [/fr/](https://porchmath.com/fr/) [/de/](https://porchmath.com/de/) [/it/](https://porchmath.com/it/) [/id/](https://porchmath.com/id/) [/vi/](https://porchmath.com/vi/) [/ja/](https://porchmath.com/ja/)
