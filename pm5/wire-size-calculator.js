@@ -19,17 +19,18 @@ function CALC(){var met=MT,v=$('vs').value,V=v=='c'?N('vc',{max:100000}):+v,ph=$
  if(ph=='3'&&V==277)w.push('Check the voltage: 277 V is a line-to-neutral voltage. Three-phase circuits are normally sized with the line-to-line voltage, such as 480 V.');
  if(V<12)w.push('Check the voltage: this calculator is meant for building wiring.');
  var cur=['Current used for sizing',F(I,0,2)+' A'+($('ct').checked?' (125 % × '+F(I0,0,2)+' A)':'')];
- if(met){var iv=-1;for(j=0;j<MM.length;j++)if(pct(j)<=X){iv=j;break}
+ if(met){var iv=-1,j0=cu?0:1;for(j=j0;j<MM.length;j++)if(pct(j)<=X){iv=j;break}  /* T11-16: aluminum >= 2.5 mm² (IEC 60364-5-52 Table 52.2, fixed wiring) */
   var amin=(ph=='3'?1.732:2)*(cu?0.0172:0.0282)*L*I/(X/100*V);
   if(iv<0)return {msg:'No size in this table (up to 240 mm²) keeps the voltage drop within the limit. Use parallel conductors or have an electrical engineer design the circuit.'};
-  rows=[['Recommended wire size',NAME(1,iv)+' · '+MAT],['Governing check','Voltage drop only'],['Minimum cross-section for this voltage drop',F(amin,2)+' mm²'],['Voltage drop',vdt(iv)],['Next size up',iv+1<MM.length?NAME(1,iv+1):'—'],['Next size down',iv>0?NAME(1,iv-1)+': '+vdt(iv-1):'—'],cur];
+  rows=[['Recommended wire size',NAME(1,iv)+' · '+MAT],['Governing check','Voltage drop only'],['Minimum cross-section for this voltage drop',F(amin,2)+' mm²'],['Voltage drop',vdt(iv)],['Next size up',iv+1<MM.length?NAME(1,iv+1):'—'],['Next size down',iv>j0?NAME(1,iv-1)+': '+vdt(iv-1):'—'],cur];
+  if(!cu)w.push('Minimum %n mm² for aluminum conductors (IEC 60364-5-52, Table 52.2).'.replace('%n',F(2.5,1)));
   w.push('Current-carrying capacity is not checked in metric mode. Check it against IEC 60364-5-52 or your local wiring standard.');
   return {rows:rows,warn:w.join(' ')}}
  var col=+$('tt').value,A=AMP[cu?'cu':'al'],Lm=LIM[cu?'cu':'al'],ia=-1,it=-1,ivu=-1;
  for(j=0;j<AWG.length;j++){if(!A[j])continue;var a=A[j][col],e=Math.min(a,Lm[j]||1e9);if(it<0&&a>=I)it=j;if(ia<0&&e>=I)ia=j;if(ivu<0&&pct(j)<=X)ivu=j}
  if(ia<0||ivu<0)return {msg:'No size in this table (up to 500 kcmil) passes both checks. Use parallel conductors or have an electrical engineer design the circuit.'};
  var ans=Math.max(ia,ivu),gov=ivu>ia?'Voltage drop':ia>it?'Small-conductor limit (NEC 240.4(D))':ivu==ia?'Ampacity and voltage drop':'Ampacity (NEC Table 310.16)',a0=A[ans][col],l0=Lm[ans],first=cu?0:1;
- var amp=F(a0,0)+' A ('+(col?'75':'60')+' °C column)'+(l0&&l0<a0?' — max. overcurrent protection '+F(l0,0)+' A (NEC 240.4(D))':'');
+ var amp=F(a0,0)+' A '+'(%t °C column)'.replace('%t',col?'75':'60')+(l0&&l0<a0?' — max. overcurrent protection '+F(l0,0)+' A (NEC 240.4(D))':'');
  var dn='—';if(ans>first){var b=A[ans-1][col],bl=Math.min(b,Lm[ans-1]||1e9);dn=NAME(0,ans-1)+': '+(b<I?'fails ampacity ('+F(b,0)+' A)':bl<I?'fails the 240.4(D) limit ('+F(bl,0)+' A)':'fails voltage drop, '+vdt(ans-1))}
  rows=[['Recommended wire size',NAME(0,ans)+' · '+MAT],['Governing check',gov],['Ampacity of this size',amp],['Voltage drop',vdt(ans)],['Next size up',ans+1<AWG.length?NAME(0,ans+1):'—'],['Next size down',dn],cur];
  return {rows:rows,warn:w.join(' ')}}

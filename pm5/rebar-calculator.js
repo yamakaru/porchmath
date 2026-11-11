@@ -18,4 +18,7 @@ function CALC(){var L=N('L',{max:1e4}),W=N('W',{max:1e4}),s=N('S',{max:1e5}),c=N
  var rows=[['Total bars',F(A.n+B.n,0)],['Bars along the length',seg(A)],['Bars along the width',seg(B)],[MT?'Total length (m)':'Total length (ft)',F(tl,0,2)]];
  if(MT)rows.push(['Weight (kg)',F(wt,1)]);else rows.push(['Weight (lb)',F(wt,1)],['Weight (kg)',F(wt*0.45359237,1)]);
  rows.push(['Stock bars to buy',F(sticks,0)+' × '+F(st,0,2)+U]);
- return {rows:rows}}
+ /* T11-17: plausibility (spacing < 50 mm / 2 in, cover < 15 mm / 0.5 in) — still calculated, but flagged */
+ var w=[],uu=MT?' mm':' in';if(s<(MT?50:2))w.push('Check the bar spacing: %v is unusually small. Spacing is measured center to center, in the unit shown on the field.'.replace('%v',F(s,0,2)+uu));
+ if(c>0&&c<(MT?15:0.5))w.push('Check the edge cover: %v is unusually small for concrete cover.'.replace('%v',F(c,0,2)+uu));
+ return {rows:rows,warn:w.join(' ')}}

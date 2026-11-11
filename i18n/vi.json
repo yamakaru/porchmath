@@ -286,7 +286,7 @@
 "h3791c943e15488f7": "400 mm",
 "h37e879b729717676": "Hiển thị công thức hình học được sử dụng",
 "h38495100c2a9b46a": "<a href=\"/\">Trang chủ</a>  /  <a href=\"/#tools\">Trong nhà</a>  /  Len chân tường &amp; Phào chỉ",
-"h386843666a749047": "Kết quả tự động cập nhật khi bạn nhập. Gallons ở đây là gallon Mỹ.",
+"h386843666a749047": "Kết quả tự động cập nhật khi bạn nhập. Gallon ở đây là gallon Mỹ.",
 "h3888dadaef64ef16": "Công thức minh bạch",
 "h3893b6fd9993ac32": "Kết quả là ước tính — hãy nhờ thợ điện có chứng chỉ kiểm tra",
 "h38ba7587a5a45e66": "Dày 6 in: khoảng 54 sq ft",
@@ -436,7 +436,7 @@
 "h4e3f6d3a9a283590": "Cách chúng tôi xây dựng công cụ tính",
 "h4e51a85a9cc4b290": "Nhân dài × rộng × cao, cả ba đều tính bằng feet. Nếu đo bằng inch, nhân các số inch rồi chia cho 1,728. Đo bằng mét thì ra ngay m³.",
 "h4e92a53ac4a49f0b": "Công cụ tính cỏ cuộn &amp; hạt giống cỏ chính xác đến mức nào?",
-"h4ee89056ca33f2ea": "<span class=\"us\">Tốc độ bơm (US gal/min, không bắt buộc)</span><span class=\"mt\">Tốc độ bơm (L/min, không bắt buộc)</span>",
+"h4ee89056ca33f2ea": "<span class=\"us\">Tốc độ bơm (gallon Mỹ/phút, không bắt buộc)</span><span class=\"mt\">Tốc độ bơm (L/min, không bắt buộc)</span>",
 "h4f3780ac94237c37": "Tính thể tích ra gallon Mỹ, lít và mét khối cho hồ bơi hình chữ nhật, hình tròn hoặc hình bầu dục có độ sâu đồng đều hoặc độ sâu dốc, cùng với thời gian bơm đầy.",
 "h4f8fee4dfb2df50e": "Nhập chu vi phòng, chiều cao tường, kích thước cuộn và độ lặp hoa văn để tính số cuộn cần thiết.",
 "h4fda06143f970006": "<span class=\"us\">Diện tích bồn cây (sq ft)</span><span class=\"mt\">Diện tích bồn cây (m²)</span>",
@@ -1820,5 +1820,14 @@
 "tfc606f7932dd7f20": "Chính sách bảo mật của PorchMath.",
 "tfd5851bd38349039": "Tính giấy dán tường theo phương pháp chia dải: từ chu vi phòng, chiều cao, kích thước cuộn và độ lặp hoa văn ra số cuộn cần thiết.",
 "tfdc045572f89785d": "Công cụ tính giấy dán tường",
-"tff0775a93aba029b": "Công cụ tính board foot: nhập độ dày, rộng (in), chiều dài (ft) và số lượng để ra board feet, linear feet và chi phí gỗ."
+"tff0775a93aba029b": "Công cụ tính board foot: nhập độ dày, rộng (in), chiều dài (ft) và số lượng để ra board feet, linear feet và chi phí gỗ.",
+"j300467240c7eb47f": "DOMContentLoaded",
+"j6780d7b77a85c5a9": "$2 m² ($1 ft²)",
+"j2d3e82be1e738662": "%v",
+"j28f18631b86ea95e": "%t",
+"j6a8782ac6930324b": "%n",
+"jc8f1b95e0f647078": "(cột %t °C)",
+"j715ffad141c9f5b1": "Tối thiểu %n mm² cho nhôm theo IEC 60364-5-52 (Bảng 52.2).",
+"jccad42ce7e57da73": "Kiểm tra khoảng cách cốt thép: %v nhỏ bất thường. Khoảng cách tính từ tâm đến tâm, theo đơn vị ghi ở ô nhập.",
+"jbafbb0b59bdd0615": "Kiểm tra lớp bảo vệ cạnh: %v nhỏ bất thường cho lớp bê tông bảo vệ."
 }

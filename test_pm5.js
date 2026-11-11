@@ -84,5 +84,26 @@ for(const lp of ['de/','vi/']){const r=await p.goto(`${base}/${lp}wire-size-calc
  await go('pool-volume-calculator','1',lp);await sel('sh','re');await sel('dm','v');await W({L:8,W:4,DS:'1,2',DD:'1,8',Q:''});ok((await R()).includes('48.000'),'PV3 '+lp+(await R()));
  await go('btu-calculator','1',lp);await W({A:'13,9',P:2});await sel('sun','n');ok((await R()).includes('5.000'),'B5 '+lp+(await R()));
  await go('rebar-calculator','1',lp);await sel('bm','12');await sel('stm','12');await W({L:6,W:4,S:'300',CV:'75'});ok((await R()).includes('144,7'),'R10 '+lp+(await R()));}
+// ---------- round 2 regressions (Tester 11/11 vòng 1)
+await go('wire-size-calculator','1');await W({vs:'230',ph:'1',cd:'al',I:10,L:10,X:3});await has('2.5 mm² · Aluminum','T11-16 Al metric min');await not('1.5 mm² · Aluminum','T11-16 no 1.5 Al');await has('Minimum 2.5 mm² for aluminum conductors (IEC 60364-5-52, Table 52.2).','T11-16 note');
+{const r=await R();ok(!/Next size down=1\.5 mm²/.test(r),'T11-16 next size down not below 2.5 '+r)}
+await W({cd:'cu'});await has('1.5 mm² · Copper','T11-16 Cu metric 1.5 kept');await not('Minimum 2.5 mm²','T11-16 no note for Cu');
+await go('wire-size-calculator','0');await W({vs:'120',ph:'1',cd:'al',tt:'1',I:10,L:10,X:3});await not('1.5 mm²','T11-16 US Al unchanged');await not('Minimum 2.5','T11-16 US no note');
+await go('wire-size-calculator','0','vi/');await W({vs:'120',ph:'1',cd:'cu',tt:'1',I:20,L:10,X:3});await has('(cột 75 °C)','T11-06 vi');
+await go('wire-size-calculator','0','it/');await W({vs:'120',ph:'1',cd:'cu',tt:'0',I:20,L:10,X:3});await has('(colonna 60 °C)','T11-06 it');
+await go('wire-size-calculator','1','vi/');await W({vs:'230',ph:'1',cd:'al',I:10,L:10,X:3});await has('Tối thiểu 2,5 mm² cho nhôm theo IEC 60364-5-52 (Bảng 52.2).','T11-16 vi note');
+await go('btu-calculator','1','vi/');await W({A:'5',P:2});await sel('sun','n');{const r=await R();ok(r.includes('9,3 m² (100 ft²)')&&r.includes('5.000 BTU/h')&&!/5,000|9\.3/.test(r),'T11-04 vi metric '+r)}
+await go('btu-calculator','0','de/');await W({A:'3000',P:2});{const r=await R();ok(r.includes('2.500 ft² (232 m²)')&&!r.includes('2,500'),'T11-04 de US '+r)}
+await go('btu-calculator','1','de/');await W({A:'300',P:2});{const r=await R();ok(r.includes('232 m² (2.500 ft²)'),'T11-04 de metric '+r)}
+await go('btu-calculator','0');await W({A:'50',P:2});await has('Under 100 ft² (9.3 m²)','T11-04 en unchanged');
+await go('rebar-calculator','1','vi/');await sel('bm','12');await sel('stm','12');await W({L:6,W:4,S:'0,3',CV:'7,5'});{const r=await R();ok(/Kiểm tra khoảng cách cốt thép: 0,3 mm/.test(r)&&/Kiểm tra lớp bảo vệ cạnh: 7,5 mm/.test(r),'T11-17 vi warn '+r)}
+await go('rebar-calculator','1');await sel('bm','12');await sel('stm','12');await W({L:6,W:4,S:300,CV:75});await not('Check the','T11-17 no warn normal');
+await go('rebar-calculator','0');await sel('bu','4');await sel('st','20');await W({L:10,W:10,S:1,CV:0.25});await has('Check the bar spacing: 1 in','T11-17 US spacing');await has('Check the edge cover: 0.25 in','T11-17 US cover');
+await go('stud-calculator','1','vi/');for(const v of ["12'",'12"']){await set('L',v);await p.waitForTimeout(80);ok(await p.$eval('#L',e=>e.getAttribute('aria-invalid'))==='true','T11-18 reject '+v)}
+await go('stud-calculator','0','de/');await set('L',"1'200");await p.waitForTimeout(80);ok(await p.$eval('#L',e=>e.getAttribute('aria-invalid'))!=='true','T11-18 1\'200 still accepted as thousands');
+await go('wire-size-calculator','0');{const h=await p.$$eval('a[href]',a=>a.filter(x=>x.origin===location.origin&&!x.hasAttribute('download')).map(x=>x.href));ok(h.length>5&&h.every(x=>/[?&]evtest=1/.test(x)),'T11-19 links keep evtest '+h.filter(x=>!/evtest/.test(x)).slice(0,3))}
+await p.goto(base+'/wire-size-calculator/');{const h=await p.$$eval('a[href^="/"]',a=>a.map(x=>x.getAttribute('href')));ok(h.every(x=>!/evtest/.test(x)),'T11-19 no evtest without flag')}
+await p.setViewportSize({width:1440,height:900});for(const u of ['pool-volume-calculator','btu-calculator','voltage-drop-calculator']){await p.goto(base+'/'+u+'/');const w=await p.evaluate(()=>{const r=e=>{const x=e.getBoundingClientRect();return Math.round(x.left)+'/'+Math.round(x.right)};return [r(document.querySelector('section.faq')),r(document.querySelector('.guide'))]});ok(w[0]===w[1],'T11-14 faq width '+u+' '+w)}
+await p.setViewportSize({width:390,height:844});
 ok(errs.length==0,'js errors '+errs.join(';'));
 console.log(bad?'FAILED':'ALL OK',n-bad+'/'+n);await b.close();process.exit(bad?1:0)})();
