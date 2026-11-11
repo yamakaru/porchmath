@@ -10,6 +10,10 @@ with sync_playwright() as p:
     u,q,exp,top,no,cnt=(tuple(t)+(None,[],0)[len(t)-3:])
     pg.goto(u+E);pg.type('#q',q,delay=20) if q else None;pg.wait_for_timeout(300)
     r=pg.evaluate("()=>[[...document.querySelectorAll('#all .card')].filter(c=>!c.hidden).map(c=>[c.querySelector('h3').innerText,new URL(c.href).pathname.split('/').filter(Boolean).pop()]),!document.getElementById('none').hidden]")
+    # host / locale / evtest checks on every visible card (Tester r2): same host and same /<lang>/ prefix as the page, no #hash;
+    # PorchMath cards carry ?evtest=1 in test mode (T11-19); FileMoss adds it on click by design
+    cv=pg.evaluate("()=>{const L=(location.pathname.match(/^\\/(es|pt|fr|de|it|id|vi|ja)\\//)||[,''])[1];return [...document.querySelectorAll('#all .card')].filter(c=>!c.hidden).map(c=>{const x=new URL(c.href);const l=(x.pathname.match(/^\\/(es|pt|fr|de|it|id|vi|ja)\\//)||[,''])[1];return (x.host!==location.host?'host ':'')+(l!==L?'lang ':'')+(x.hash?'hash ':'')+(location.host.indexOf('porchmath')>=0&&!/[?&]evtest=1/.test(x.search)?'evtest ':'')+x.pathname}).filter(v=>/^(host|lang|hash|evtest) /.test(v))}")
+    if cv: bad+=1; print('BAD card links',u,repr(q),cv[:5])
     hs=[x[1] for x in r[0]];tot=pg.evaluate("document.querySelectorAll('#all .card').length");ok=(len(r[0])>0)==exp and r[1]==(not exp) and (not top or (hs and hs[0]==top)) and not set(no)&set(hs) and (not cnt or len(hs)==(tot if cnt<0 else cnt)); bad+=not ok
     print('OK ' if ok else 'BAD',u,repr(q),'top3',[x[0] for x in r[0][:3]],len(hs),'msg' if r[1] else '')
   for w in (360,390,820):

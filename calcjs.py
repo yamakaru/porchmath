@@ -69,7 +69,7 @@ def build(k,v):
         "function NF(d,g,mx){return new Intl.NumberFormat(LOC,{minimumFractionDigits:d,maximumFractionDigits:mx==null?d:mx,useGrouping:g!==false})}"
         "var DEC=(function(){try{var p=NF(1).formatToParts(1.5);for(var j=0;j<p.length;j++)if(p[j].type=='decimal')return p[j].value}catch(e){}return '.'})();"
         "function Z(a,b){if(b<a)OV=1;return Math.max(a,b)}"
-        "function pnum(s){s=String(s==null?'':s).replace(/[\\s\\u00a0\\u202f]/g,'').replace(/(\\d)\\x27(?=\\d)/g,'$1');if(!s)return 'E';if(/^[-+]?\\d+(\\.\\d+)?e[-+]?\\d+$/i.test(s))return +s;if(!/^[-+]?[\\d.,]+$/.test(s)||!/\\d/.test(s))return 'N';"
+        "function pnum(s){s=String(s==null?'':s).replace(/[\\s\\u00a0\\u202f]/g,'');if(/\\x27/.test(s)){if(!/^[-+]?\\d{1,3}(\\x27\\d{3})+([.,]\\d+)?$/.test(s))return 'N';s=s.replace(/\\x27/g,'')}if(!s)return 'E';if(/^[-+]?\\d+(\\.\\d+)?e[-+]?\\d+$/i.test(s))return +s;if(!/^[-+]?[\\d.,]+$/.test(s)||!/\\d/.test(s))return 'N';"
         "var sg=s.charAt(0)=='-'?-1:1;s=s.replace(/^[-+]/,'');var c=s.split(',').length-1,d=s.split('.').length-1,v;"
         "function grp(x,sp){return new RegExp('^\\\\d{1,3}(\\\\'+sp+'\\\\d{3})+$').test(x)}"
         "if(c&&d){var di=Math.max(s.lastIndexOf(','),s.lastIndexOf('.')),ds=s.charAt(di),gs=ds==','?'.':',',ip=s.slice(0,di),fp=s.slice(di+1);if(!/^\\d+$/.test(fp)||ip.indexOf(ds)>=0||!grp(ip,gs))return 'N';v=+(ip.split(gs).join('')+'.'+fp)}"
