@@ -30,9 +30,14 @@ import calcjs as CJ
 exec(open("tools4.py").read());tools.update(T4)
 for _k,_v in T4.items():
     if _k not in CATS[_v["cat"]]: CATS[_v["cat"]].append(_k)
+exec(open("tools5.py").read());tools.update(T5)
+for _k,_v in T5.items():
+    if _k not in CATS[_v["cat"]]: CATS[_v["cat"]].append(_k)
 exec(open("render.py").read())
 import subprocess as _sp;_sp.run(["python3","metricize.py"],check=True)
 
 _sp.run(["python3","searchidx.py"],check=True)
 
 _sp.run(["python3","seo_post.py"],check=True)
+_sp.run(["python3","make_og.py"],check=True)  # F3: dist/og.png
+open("dist/_headers","w").write("/*\n  Strict-Transport-Security: max-age=31536000\n")  # F4: HSTS (no includeSubDomains/preload)

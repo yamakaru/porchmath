@@ -1,4 +1,5 @@
 // In metric mode, no imperial unit may appear in calculator labels/results outside brackets.
+// Options of hidden (US-only) selects are skipped; pool volume keeps its US-gallon equivalent row in metric mode (Tester PV3).
 const {chromium}=require('/workspace/deskkit/node_modules/playwright-core');
 const base=process.argv[2]||'http://localhost:8812';
 const NOM=['roofing','deck-board','stair','square-footage','cubic-yard','board-foot','cubic-feet'];
@@ -10,6 +11,6 @@ for(const l of L)for(const c of calcs){await p.goto(`${base}/${l}${c}/`);
  const ok=await p.evaluate(()=>{const bs=[...document.querySelectorAll('button')].filter(x=>/metr|mét|メートル/i.test(x.innerText));if(!bs.length)return false;bs[0].click();return true});
  if(!ok){console.log('NO TOGGLE',l+c);bad++;continue}
  await p.waitForTimeout(150);
- const txt=await p.evaluate(()=>[...document.querySelectorAll('label'),...document.querySelectorAll('#r td, #r th'),...document.querySelectorAll('select option')].filter(e=>e.offsetParent!==null||e.tagName=='OPTION').map(e=>e.innerText.trim()));
+ const txt=await p.evaluate(()=>[...document.querySelectorAll('label'),...document.querySelectorAll('#r td, #r th'),...document.querySelectorAll('select option')].filter(e=>e.tagName=='OPTION'?e.parentElement.offsetParent!==null:e.offsetParent!==null).filter(e=>!(location.pathname.includes('pool-volume-calculator')&&e.matches('#r th, #r td')&&/gal|ガロン/i.test(e.closest('tr').innerText))).map(e=>e.innerText.trim()));
  for(const t of txt){n++;const MET=/(m²|m³|cm³|cm|mm|kg|\bL\b|\bm\b|\bt\b)/;const s=t.replace(/[(（][^()（）]*[)）]/g,x=>MET.test(t.replace(x,''))?'':x);if(l!=='' ? IMP.test(s.replace(/\b(in|a|to)\b(?=\s+\D)/g,'')) : IMP.test(s.replace(/\bin\b(?= [a-z])/g,''))){console.log('IMPERIAL',l+c,JSON.stringify(t));bad++}}}
 console.log(`${n} strings, ${bad} problems`);await b.close();process.exit(bad?1:0)})();

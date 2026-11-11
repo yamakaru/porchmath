@@ -20,7 +20,7 @@ for l in L:
         if l=='' and any(r.startswith(f'dist/{x}') for x in L if x):continue
         if 'index.html' not in fs:continue
         p=os.path.join(r,'index.html');M.ENTH.clear()
-        if l:M.ENTH.update(x.replace(',','') for x in M.entho(p,l))
+        M.ENTH.update(x.replace(',','') for x in M.entho(p,l))  # EN page too: comma = thousands
         s=BeautifulSoup(open(p,encoding='utf-8'),'html.parser')
         for x in s(['script','style','head']):x.decompose()
         T=re.sub(r'\s*[(（][^()（）]*[)）]','',s.get_text(' '))  # drop bracketed equivalents

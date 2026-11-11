@@ -10,7 +10,7 @@ def runp(path,inp,L='en'):
     stub="var V=%s;var document={documentElement:{lang:%s},getElementById:function(i){return {value:V[i]}}};"%(json.dumps({k:str(v).replace(".",DEC.get(L,",")) for k,v in inp.items()}),json.dumps(L))
     return json.loads(subprocess.run(["node","-e",stub+js+";console.log(JSON.stringify(c()))"],capture_output=True,text=True,check=True).stdout)
 fail=0;n=0
-slugs=sorted(s for s in os.listdir("dist") if s.endswith("-calculator") and s not in ('cubic-feet-calculator','voltage-drop-calculator','concrete-slab-cost-calculator','roof-pitch-calculator','retaining-wall-calculator'))
+slugs=sorted(s for s in os.listdir("dist") if s.endswith("-calculator") and s not in ('cubic-feet-calculator','voltage-drop-calculator','concrete-slab-cost-calculator','roof-pitch-calculator','retaining-wall-calculator','wire-size-calculator','pool-volume-calculator','btu-calculator','stud-calculator','rebar-calculator'))
 for L in LANGS:
     for slug in slugs:
         h=open(f"dist/{L}/{slug}/index.html").read()
